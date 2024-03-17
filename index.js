@@ -62,12 +62,12 @@ app.post('/', async (req, res) => {
     }
 });
 */
-
 //UPDATE
-app.route("/edit/:id").get(async (req, res) => {
+app.route("/edit/:id")
+.get(async (req, res) => {
   const id = req.params.id;
   try {
-    let tasks = await TodoTask.find({})
+    let tasks = await TodoTask.find({});
     res.render("todoEdit.ejs", { todoTasks: tasks, idTask: id });
   } catch (err) {
     res.send(500, err);
@@ -76,10 +76,20 @@ app.route("/edit/:id").get(async (req, res) => {
 .post(async (req, res) => {
   const id = req.params.id;
   try {
-    await TodoTask.findByIdAndUpdate(id, { title: req.body.title })
+    const { title, date } = req.body;
+    const parsedDate = new Date(date);
+    if (isNaN(parsedDate.getTime())) {
+      throw new Error('Invalid date format.');
+    }
+    // Perform the update
+    await TodoTask.findByIdAndUpdate(id, {
+      title: title,
+      date: parsedDate
+    });
     res.redirect("/");
   } catch (err) {
-    res.send(500, err);
+    // If there's an error, send the error message back to the client
+    res.send(500, err.message);
   }
 });
 
@@ -91,5 +101,16 @@ app.route("/remove/:id").get(async (req, res) => {
     res.redirect("/");
   } catch (err) {
     res.send(500, err);
+  }
+});
+
+//GETJSON
+app.get('/json', async (req, res) => {
+  try {
+    const tasks = await TodoTask.find({});
+    res.render('json.ejs', { tasks: JSON.stringify(tasks, null, 2) });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('An error occurred while fetching tasks.' );
   }
 });

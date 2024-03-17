@@ -56,6 +56,7 @@
     background: rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: row;
+
     }
     .todo-list-item form {
     width: 100%;
@@ -67,6 +68,8 @@
     border: none;
     border-radius: 5px;
     font-family: 'Candal', sans-serif;
+    max-width: 100px; /* Set a max-width as per your preference */
+
     }
     .todo-list-item button {
     color: white;
