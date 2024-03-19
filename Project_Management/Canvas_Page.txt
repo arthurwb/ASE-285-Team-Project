@@ -1,0 +1,361 @@
+Team 🅉 Project Page
+Slogan: "Focus on What Matters: Streamlining Tasks with Every Click."
+Our goal in this project: Our goal in this project is to create a streamlined task management solution with a user-friendly web application that enables effortless organization of daily tasks and deadlines by utilizing Mongoose/MongoDB for seamless operation. This project will demonstrate our skills in creating complex solutions that involve designing and engineering software. 
+
+Features: The following are some unique features that make our application stand above all others in the current market.
+File Upload (Quay Robinson)
+Tag Query/Search (Quay Robinson)
+Entry Subtasks (Bryce Bien)
+Password Encryption and User Data Storage (Bryce Bien)
+Session Controls (Brooks Arthur)
+User Login Page (Brooks Arthur)
+Recurring Entries (Cody King)
+Search By Date (Cody King)
+ 
+
+Team Information
+Team
+Team Leader: Ben Molloy (molloyb1@nku.edu) - Ben Molloy
+Team member 1: Brooks Arthur (ARTHURW1@nku.edu) - Brooks Arthur
+Team member 2: Quay Robinson (ROBINSONQ4@nku.edu) - Quay Robinson
+Team member 3: Bryce Bien (BIENB1@nku.edu) - Bryce Bien
+Team member 4: Cody King (KINGC26@nku.edu) - Cody King
+ 
+
+Team Rules
+The team rules can also be found from this link(GitHub LinkLinks to an external site.). 
+
+Rule 1 (Communication): Team members will communicate with the team leader any major issues they are having related to the project, including not being able to attend weekly meetings. This will be done in as advance as possible.
+Rule 2 (Respect): Team members and leader will be respectful of each other and each ones capabilities. 
+Rule 3 (Surprises): No surprises.
+Rule 4 (Clean Code): When pushing code from personal branches to main, team members will maintain clean code. 
+Rule 5 (Penalty): If a team member repeatedly breaks rules, there will be a penalty in the form of low peer review points.
+If any rule is broken, the team leader will take the appropriate actions whether that is escalating the incident or simply reminding the team member of the rules. 
+
+ 
+
+Team Tools
+Programming languages:
+JavaScript
+JSON*
+EJS
+HTML*
+CSS*
+Node.js
+Markdown*
+JEST*
+ 
+
+Software: 
+IDE: Visual Studio Code
+Notion
+GitHub*
+GitHub Desktop
+Discord (Communication)
+Microsoft Outlook (Communication)
+Microsoft Teams (Communication)
+Canvas (Planning)
+ 
+
+Database:
+MongoDB/Mongoose 
+ 
+
+Team Meeting Times
+The following is the weekly meeting times:
+
+March 24, 15:30 - Discord 
+March 31, 15:30 - Discord 
+April 7, 15:30 - Discord 
+April 14, 15:30 - Discord 
+April 21, 15:30 - Discord 
+April 28, 15:30 - Discord 
+ 
+
+Risk Analysis
+Ben Molloy:
+
+ROTC - Every Monday, Wednesday, Friday morning
+MAT 483 Software Final - TBD
+Military JFTX - 3/21 to 3/24
+Military Ball - 4/20
+Research Project - TBD
+P3 & 4 Technical Writing - TBD
+CSC 460 Program - 3/31
+HW8 Deadline - 5/3
+Quay Robinson:
+
+Game Tournament - 3/21
+CYS 430 Exam - 4/1
+ASE 285 Midterm - 4/10
+PHI 310 Exam - TBD
+HW8 Deadline - 5/3
+Bryce Bien:
+
+  1. (3/24) - unavailable
+
+  2. (3/29 - 3/31) - unavailable
+
+  3. Week of 2/26 - Midterm Exams
+
+  4. Classes and Work Risk Analysis
+
+M - work/classes (6-3)
+T - classes (12-4)
+W - work/classes (6-11)
+Tu - classes (12-4)
+F - work (5-1am)
+Sa - unavailable after 5pm
+Su - work (7am-3)
+Brooks Arthur:
+
+Scheduled Shows - Variable (set by venue)
+Sundays - No access to computer, available for communication.
+ASE 285 Midterm - 4/10
+HW8 Deadline - 5/3
+Cody King:
+
+Work (M - F, 8 am -1 pm)
+ENG 347 Major Assignment 3 - 4/7
+ENG 347 Major Assignment 4 - 4/28
+HW 8 - 5/3
+CSC 360 Final Exam - 5/3
+Project Artifacts
+Planning Presentation
+Date: 3/20/24
+GitHub Link: The PowerPoint presentation can be found here.
+Comments: This was our first stakeholder meeting where we did our initial pitch to the investors to see what there thoughts are. 
+ 
+
+Weekly Presentations
+Week TBD
+Date: TBD
+GitHub Link: ...
+Comments: ...
+ 
+
+Week TBD
+Date: TBD
+GitHub Link: ...
+Comments: ...
+ 
+
+Final Presentation
+Week TBD
+Date: TBD
+GitHub Link: ...
+Comments: ...
+ 
+
+Epics/Requirements
+Quay Robinson:
+
+Tag Query/Search: 
+As a student, I want to search for a specific tag related to tasks on my todo list so that I can categorize them efficiently.
+
+As a user, I want to view all tasks associated with a specific tag so that I can focus on tasks related to a particular category or project.
+
+As a user, I want to see an error message when the search yields nothing.
+As a user, I want to type text into a a search bar, and have it return matching results.
+File Upload: 
+As a student, I want to be able to attach files to tasks within the to-do list application for reference or documentation purposes.
+
+As a user, I want to be able to select files from my local device for attachment.
+
+As a user, I want to upload various file types, including documents, images, and media files.
+Brooks Arthur:
+
+Session Controls
+As a student, I want to be able to pass hashed user data between pages using local storage/cookies so that I can access user-specific site content and allow for users to be signed in across all current and future pages.
+
+As a user, I want to be able to stay signed in across all pages on the site so that I don't not need to keep signing in every time I enter a page.
+
+As a user, I want to my data to be hashed so that my password is secure even when used as a cookie/session variable.
+
+As a user, I want to only be shown content which is related to me and my user account so I gain a user-specific site environment.
+
+As a user, I want to be able to create content that is saved to the database that is unique to my account so that I can retrieve that specific data and have it displayed to my to-do page.
+
+User Login Page
+As a student, I wish to be able to log in to the to-do website so I can retrieve my tasks from a database.
+
+As a user, I want to be able to create a new user with a unique username and password so I can login to the website and begin creating tasks.
+
+As a user, I want to be informed when my username or password is incorrect so I can be sure I am logging into the correct account.
+
+Bryce Bien:
+
+Entry Subtasks
+As a student, I want to create smaller tasks that need to be completed for a large project so that I can stay on track while working on it.
+
+As a user, I want to click a button next to my task to add a subtask so I can stay on track with the large task.
+
+As a user, I want to create subtasks for my main task so I can break down larger projects into manageable steps.
+
+As a user, I want to mark subtasks as complete individually so I can track my progress.
+
+As a user, I want to see all subtasks associated with a main task so I can see the bigger picture and plan my work accordingly.
+
+As a user, I want to see the progress of subtasks within a main task so I can quickly assess how close I am to completing the entire task.
+
+Password Encryption and User Data Storage
+As a student, I want my user information to be secure so I can not worry about my information getting stolen in the event of a data breach.
+
+As a user, I want my password to be securely transmitted to the server when logging in so I can trust my login credentials are protected.
+
+As a user, I want my password to be encrypted on the client-side before transmission so I can have confidence that my password remains confidential even if intercepted by attackers.
+
+Cody King:
+
+Recurring Tasks
+As a student, I want to have the ability to set recurring tasks so that I can keep a routine of tasks that need to be repeated without actually having to manually go in and add them each time they need to be repeated.
+
+As a user, I want to have the ability to set tasks to recur at whichever interval I choose; daily, weekly, monthly, or yearly.
+
+As a user, I want to be able to set if a task should recur forever or if it should start at a certain date and end at a certain date.
+
+As a user, I want to be able to have the ability to differentiate my recurring tasks from my regular ones.
+
+As a user, I want the ability to be able to pause a recurring task and start it when I need it again.
+
+Search By Date
+As a student, having the ability to search dates will be helpful because I need to know when I am busy for planning things.
+
+As a user, I want the ability to be able to search for tasks on a specific date or within a range of dates.
+
+As a user, I want to see the correct message when no results are on those dates.
+
+
+Testing
+Quay Robinson:
+
+Tag Query/Search:
+Test that searching for tasks using a specific tag returns the expected results.
+Test that read and update works successfully
+Test that user is able to input and submit text
+File Upload:
+Test successful upload of document
+Make sure button on page works as expected
+Brooks Arthur:
+
+Session Controls
+Test for specific user generated content when given a specific session variable.
+
+Test for correct response when uploading content with a specific user variable (password/id).
+
+Manual test between logging in with a previously created account and correct data is displayed.
+User Login Page
+Test for user creation with expected incorrect and correct user creation response.
+Verify that the user creation function works properly.
+Test for user login functionality with expected incorrect and correct user login response.
+Verify that the user can login/cannot login when the correct/incorrect information is given.
+Bryce Bien:
+
+Entry Subtasks
+Test that adding a subtask returns the expected results.
+
+Test that write and update works successfully
+
+Test that the user is able to input and submit a subtask
+
+Password Encryption and User Data Storage
+Test successful encryption of password credentials
+Test successful encrypted storage of password credentials in database
+Cody King:
+
+Recurring Tasks
+Test that tasks are actually repeating at the specific interval they are supposed to.
+
+Test that custom start and end dates for tasks are working.
+
+Tests that modifications made to tasks are applied to all tasks.
+
+Test that user is able to create recurring task.
+
+Test that user is able to pause and cancel tasks.
+
+Search By Data
+Test that searching for tasks on a specific date is working.
+
+Test that searching for tasks on a specific range of dates is working.
+
+Test that UI is functional and easy to use.
+
+Test that user is able to search in correct format (MM/DD/YYYY).
+
+Test that correct error message is given when searching in incorrect date format.
+
+ 
+
+Backlogs
+Product Backlog
+User Login  (Brooks Arthur) - Essential for security and personalized user experience.
+Session Management/Controls (Brooks Arthur) - Core functionality.
+Subtasks for Detailed Task Management (Bryce Bien) - Adds depth to task planning, enhancing user control.
+Password Encryption and User Data Storage (Bryce Bien) - Critical for user account security.
+File Upload Capability (Quay Robinson) - Allows users to attach files to tasks, increasing utility.
+Tag Query/Search Functionality (Quay Robinson) - Enables efficient task categorization and retrieval.
+Recurring Tasks Feature (Cody King) - Facilitates routine task scheduling, saving user time.
+Search by Date Function (Cody King) - Essential for navigating and organizing tasks over time.
+ 
+
+1st Sprint Backlog (March 24, 2024 - April 7, 2024)
+Set up project structure and databases - Initial setup using Mongoose/MongoDB.
+Implement User Login - Basic User session experience.
+Implement Subtasks Implementation - Allow for more detailed task planning.
+Implement  File Upload Feature - Research and prototype potential solutions.
+Implement Recurring Tasks Feature - Outline technical approach and UI design.
+ 
+
+2nd Sprint Backlog (April 8, 2024 - April 21, 2024)
+
+Complete Password Encryption and User Data Storage Feature - Finalize UI and integrate with main task functionality.
+Finish Tag Query/Search Capability - Ensure support for various file types and user-friendly UI.
+Develop Search By Data Feature - Implement scheduling logic and UI elements.
+Finalize Session Controls Function - Ensure robustness and ease of use.
+Begin Comprehensive Testing - Start testing features implemented in the first and second sprints.
+Initiate Documentation - Document code, features, and user guides.
+ 
+
+Milestones and Deadline
+Milestone 1: Initial Prototype and Canvas Page done.
+Date: 3/24/24
+Goal: By the above date, the initial prototype to build off of should be complete as well as all the Planning for the project through the canvas pages.
+Milestone 2: Each member completes first feature.
+Date: 3/31/24
+Goal: Each member completes one of there two features.
+Deadline 1: Testing, Coding, Documentation of first feature is complete.
+Date: 4/7/24
+Milestone 3: Each member completes second feature.
+Date: 4/14/24
+Goal: Each member completes the coding of the second of there two features.
+Milestone 4: Testing, Coding, Documentation of second feature is complete.
+Date: 4/21/24
+Goal: All tests, code and documentation of the second feature should be done by this point.
+Deadline 2: Entire Project Should be finished.
+Date: 4/28/24
+ 
+
+History (Releases)
+Prototype v1.0
+Date: 3/17/24
+GitHub Link: Prototype v1.0Links to an external site.
+Comment: This is our first base prototype that features will be built upon.
+ 
+
+VER v2.0
+Date: TBD
+GitHub Link: TBD
+Comment: Simple comment about it.
+ 
+
+Final Version
+Date: TBD
+GitHub Link: TBD
+Comment: Simple comment about it.
+ 
+
+GitHub Repository
+The following is a link to out teams collective GitHub Repository, which we will be using the contributor option on.
+
+Link to GitHub RepositoryLinks to an external site.
