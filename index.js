@@ -50,6 +50,16 @@ app.route("/login").get(async (req, res) => {
   } catch (err) {
     console.log(err);
   }
+}).post(async (req, res) => {
+  console.log(req.body);
+  // render todo, with checks so it will send user back to login if the login fails
+  res.render("todo.ejs");
+})
+
+app.route("/create-account").post(async (req, res) => {
+  console.log(req.body);
+  // add user information into database, render login so they can login properly
+  res.render("login.ejs");
 })
 
 /* app.get("/", async (req, res) => {
