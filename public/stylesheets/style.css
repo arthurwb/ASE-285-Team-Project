@@ -106,3 +106,25 @@
     cursor:pointer;
     text-decoration: none;
     }
+    .dropdown {
+        /* position: relative; */
+        display: inline-block;
+    }
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: rgb(212, 212, 212);
+        min-width: 160px;
+        box-shadow: 0px 8px 15px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+    .dropdown-content td {
+        padding: 5px 10px 5px 10px;
+    }
+    .dropdown-content span:hover {
+        color: green;
+    }
+    .dropdown:hover .dropdown-content {
+        display: inline-block;
+      }

@@ -19,6 +19,16 @@
   <li class="todo-list-item">
   <div class="todo-list-item-name"><%= details.title %></div>
   <div class="todo-list-item-date"><%= details.date.toISOString().split('T')[0] %></div>
+  <div class="dropdown">
+    <button disabled>SubTasks</button>
+    <table class="dropdown-content">
+      <tr><td>SOMETHING HERE</td><td><span class="fas fa-check"></span></td></tr>
+      <tr><td>SOMETHING HERE</td></tr>
+      <tr><td>SOMETHING HERE</td></tr>
+      <tr><td>SOMETHING HERE</td></tr>
+      <tr><td>SOMETHING HERE</td></tr>
+    </table>
+  </div>
   <a href="/edit/<%= details._id %>" class="edit">
   <span class="fas fa-edit"></span>
   </a>
