@@ -118,8 +118,6 @@ app.route("/subtask/:id").get(async (req, res) => {
   const id = req.params.id;
   try {
     const subtask = req.body;
-    console.log(`LOOKING HERE:::: ${JSON.stringify(subtask)}`)
-
     // Perform the update
     await TodoTask.findByIdAndUpdate(id, {
       $push: {
