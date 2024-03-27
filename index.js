@@ -113,7 +113,7 @@ app.route("/subtask/:id").get(async (req, res) => {
   } catch (err) {
     res.send(500, err);
   }
-}) //TODO: add new subtask to database
+})
 .post(async (req, res) => {
   const id = req.params.id;
   try {
@@ -126,7 +126,7 @@ app.route("/subtask/:id").get(async (req, res) => {
         subtasks: subtask,
       },
     });
-    res.redirect("/");
+    res.redirect(`/subtask/${id}`);
   } catch (err) {
     // If there's an error, send the error message back to the client
     res.send(500, err.message);
