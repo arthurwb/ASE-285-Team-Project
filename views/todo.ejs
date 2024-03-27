@@ -22,11 +22,9 @@
   <div class="dropdown">
     <a href="/subtask/<%= details._id %>"><button>SubTasks</button></a>
     <table class="dropdown-content">
-      <tr><td>SOMETHING HERE</td><td><span class="fas fa-check"></span></td></tr>
-      <tr><td>SOMETHING HERE</td></tr>
-      <tr><td>SOMETHING HERE</td></tr>
-      <tr><td>SOMETHING HERE</td></tr>
-      <tr><td>SOMETHING HERE</td></tr>
+      <% details.subtasks.forEach(subtask => { %>
+      <tr><td><%= subtask.subtaskTitle %></td><td><span class="fas fa-check"></span></td></tr>
+      <% }) %>
     </table>
   </div>
   <a href="/edit/<%= details._id %>" class="edit">
