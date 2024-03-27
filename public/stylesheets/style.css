@@ -48,14 +48,14 @@
     list-style: none;
     }
     .todo-list-item {
-    padding: 10px;
-    margin-top: 10px;
-    border: none;
-    border-radius: 5px;
-    font-family: 'Candal', sans-serif;
-    background: rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: row;
+        padding: 10px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 5px 5px 0 0; /* Set the border-radius for top-left and top-right corners */
+        font-family: 'Candal', sans-serif;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        flex-direction: row;
     }
     .todo-list-item form {
     width: 100%;
@@ -144,4 +144,15 @@
         background: #33d464;
         padding: 10px 20px 10px 20px;
         text-decoration: none;
+    }
+    .todo-list-item-progress {
+        border: none;
+        border-radius: 0 0 5px 5px; /* Set the border-radius for bottom-left and bottom-right corners */
+        font-family: 'Candal', sans-serif;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+    }
+    .todo-list-item-progress span {
+        padding-right: 5px;
     }

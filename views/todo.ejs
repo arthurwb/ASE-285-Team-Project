@@ -36,7 +36,17 @@
   <a href="/remove/<%= details._id %>" class="remove">
   <span class="fas fa-times"></span>
   </a>
-  </li>
+</li>
+  <% const completedSubtasks = details.subtasks.filter(subtask => subtask.subtaskCompleted).length;
+     const totalSubtasks = details.subtasks.length;
+     const percent = ((completedSubtasks / totalSubtasks) * 100).toFixed(2);
+     if (!isNaN(percent)) { %>
+    <div class="todo-list-item-progress">
+      <span>Task Progress:</span>
+      <progress value="<%= completedSubtasks %>" max="<%= totalSubtasks %>"></progress>
+      <span style="margin-left: 10px"><%= percent %>%</span>
+    </div>
+  <% } %>
   <% }) %>
 </ul>
 
