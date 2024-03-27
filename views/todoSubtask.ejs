@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<head>
+    <title>Todo App</title>
+    <%- include('common_head.ejs') %>
+</head>
+
+<body>
+    <div class="todo-container">
+    <h2>Add Subtasks</h2>
+    <h2>Task: <%= todoTask[0].title %></h2>
+    <div class="todo">
+    
+    <form action="/subtask/<%= todoTask[0]._id %>" method="POST" class="todo-header">
+        <input type="text" name="subtask">
+        <button type="submit"><span class="fas fa-plus"></span></button>
+    </form>
+    
+    </div>
+    <button class="back-btn">Back</button>
+    </div>
+</body>

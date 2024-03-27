@@ -104,6 +104,36 @@ app.route("/remove/:id").get(async (req, res) => {
   }
 });
 
+//SUBTASKS
+app.route("/subtask/:id").get(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let tasks = await TodoTask.find({_id: id});
+    res.render("todoSubtask.ejs", { todoTask: tasks });
+  } catch (err) {
+    res.send(500, err);
+  }
+}); //TODO: add new subtask to database
+// .post(async (req, res) => {
+//   const id = req.params.id;
+//   try {
+//     const { title, date } = req.body;
+//     const parsedDate = new Date(date);
+//     if (isNaN(parsedDate.getTime())) {
+//       throw new Error('Invalid date format.');
+//     }
+//     // Perform the update
+//     await TodoTask.findByIdAndUpdate(id, {
+//       title: title,
+//       date: parsedDate
+//     });
+//     res.redirect("/");
+//   } catch (err) {
+//     // If there's an error, send the error message back to the client
+//     res.send(500, err.message);
+//   }
+// });
+
 //GETJSON
 app.get('/json', async (req, res) => {
   try {
