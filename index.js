@@ -184,6 +184,28 @@ app.route("/subtaskRemove/:id").get(async (req, res) => {
   }
 });
 
+//SUBTASK COMPLETE
+app.route("/subtaskComplete/:id").get(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let task = await TodoTask.find({"subtasks._id": id});
+    // Perform the update
+    await TodoTask.findByIdAndUpdate(task[0]._id, {
+      subtasks: task[0].subtasks.map(subtask => {
+        if (subtask._id == id) {
+          subtask.subtaskCompleted = !subtask.subtaskCompleted;
+        }
+        return subtask;
+      })
+    });
+    res.redirect("/");
+  } catch (err) {
+    // If there's an error, send the error message back to the client
+    res.send(500, err.message);
+  }
+});
+
+
 //GETJSON
 app.get('/json', async (req, res) => {
   try {

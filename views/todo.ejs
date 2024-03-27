@@ -24,7 +24,7 @@
     <table class="dropdown-content">
       <% if(details.subtasks.length > 0){
         details.subtasks.forEach(subtask => { %>
-      <tr><td><%= subtask.subtaskTitle %></td><td><span class="fas fa-check"></span></td></tr>
+      <tr><td><%= subtask.subtaskTitle %></td><td><a href="/subtaskComplete/<%= subtask._id %>" class="fas fa-check check-mark <% if(subtask.subtaskCompleted) {%>active<%} %>"></a></td></tr>
       <% })} else { %>
       <td>No Subtasks Added</td>
       <% } %>
