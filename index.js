@@ -131,6 +131,18 @@ app.route("/subtask/:id").get(async (req, res) => {
   }
 });
 
+//SUBTASK EDIT
+app.route("/subtaskEdit/:id").get(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let task = await TodoTask.find({"subtasks._id": id});
+    res.render("subtaskEdit.ejs", { todoTask: task, idSubtask: id });
+  } catch (err) {
+    res.send(500, err.message);
+  }
+})
+.post();
+
 //GETJSON
 app.get('/json', async (req, res) => {
   try {

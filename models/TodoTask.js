@@ -14,7 +14,7 @@ const todoTaskSchema = new mongoose.Schema({
         type: String,
         required: true
       },
-      subTaskDate: {
+      subtaskDate: {
         type: Date,
         default: Date.now
       }
