@@ -164,6 +164,26 @@ app.route("/subtaskEdit/:id").get(async (req, res) => {
   }
 });
 
+//SUBTASK DELETE
+app.route("/subtaskRemove/:id").get(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let task = await TodoTask.find({"subtasks._id": id});
+    // Perform the update
+    await TodoTask.findByIdAndUpdate(task[0]._id, {
+      $pull: {
+        subtasks: {
+          _id: id
+        }
+      }
+    });
+    res.redirect(`/subtask/${task[0]._id}`);
+  } catch (err) {
+    // If there's an error, send the error message back to the client
+    res.send(500, err.message);
+  }
+});
+
 //GETJSON
 app.get('/json', async (req, res) => {
   try {
