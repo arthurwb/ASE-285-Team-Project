@@ -138,10 +138,31 @@ app.route("/subtaskEdit/:id").get(async (req, res) => {
     let task = await TodoTask.find({"subtasks._id": id});
     res.render("subtaskEdit.ejs", { todoTask: task, idSubtask: id });
   } catch (err) {
-    res.send(500, err.message);
+    res.send(500, err.message)
   }
 })
-.post();
+.post(async (req, res) => {
+  const id = req.params.id;
+  try {
+    const { subtaskTitle, subtaskDate } = req.body;
+    //getting task for id
+    let task = await TodoTask.find({"subtasks._id": id});
+    // Perform the update
+    await TodoTask.findByIdAndUpdate(task[0]._id, {
+      subtasks: task[0].subtasks.map(subtask => {
+        if (subtask._id == id) {
+          subtask.subtaskTitle = subtaskTitle;
+          subtask.subtaskDate = subtaskDate;
+        }
+        return subtask;
+      })
+    });
+    res.redirect(`/subtask/${task[0]._id}`);
+  } catch (err) {
+    // If there's an error, send the error message back to the client
+    res.send(500, err.message);
+  }
+});
 
 //GETJSON
 app.get('/json', async (req, res) => {
