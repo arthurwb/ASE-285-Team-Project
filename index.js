@@ -97,7 +97,7 @@ app.route("/edit/:id")
 app.route("/remove/:id").get(async (req, res) => {
   const id = req.params.id;
   try {
-    await TodoTask.findByIdAndRemove(id)
+    await TodoTask.findByIdAndDelete(id);
     res.redirect("/");
   } catch (err) {
     res.send(500, err);
