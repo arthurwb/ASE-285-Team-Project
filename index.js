@@ -29,9 +29,24 @@ app.route("/").get(async (req, res) => {
     console.error(err);
   }
 }).post(async (req, res) => {
+
   const todoTask = new TodoTask({
-      title: req.body.title
+      title: req.body.title,
+      isRecurring: req.body.isRecurring
   });
+
+    // Creates recurrence object only if user is creating a recurring task.
+    if (todoTask.isRecurring) {
+      todoTask.recurrence = {
+        frequency: req.body.frequency,
+        interval: req.body.interval,
+        dayOfWeek: req.body.dayOfWeek,
+        dayOfMonth: req.body.dayOfMonth,
+        startBy: req.body.startBy,
+        endBy: req.body.endBy
+      }
+    };
+
   try {
     await todoTask.save();
     res.redirect("/");

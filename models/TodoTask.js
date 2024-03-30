@@ -8,7 +8,7 @@ const todoTaskSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  isRecurringTask: {
+  isRecurring: {
     type: Boolean,
     default: false
   },
