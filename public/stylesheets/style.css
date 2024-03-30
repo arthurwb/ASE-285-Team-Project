@@ -177,3 +177,13 @@ body {
 .create-account-toggle:hover {
     background-color: rgb(25, 136, 164);
 }
+
+.recurring-task-checkbox-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.recurring-task-container label {
+    margin-bottom: 3px;
+}
