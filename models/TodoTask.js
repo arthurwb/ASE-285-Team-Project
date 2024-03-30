@@ -7,6 +7,34 @@ const todoTaskSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  isRecurringTask: {
+    type: Boolean,
+    default: false
+  },
+  recurrence: {
+    frequency: {
+      type: String,
+      enum: ['none', 'daily', 'weekly', 'monthly', 'yearly'],
+      default: 'none'
+    },
+    interval: {
+      type: Number,
+      default: 1
+    },
+    dayOfWeek: {
+      type: Number
+    },
+    dayOfMonth: {
+      type: Number
+    },
+    startBy: {
+      type: Date,
+      default: Date.now
+    },
+    endBy: {
+      type: Date
+    }
   }
 })
 module.exports = mongoose.model('TodoTask',todoTaskSchema);
