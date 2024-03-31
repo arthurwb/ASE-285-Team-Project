@@ -51,7 +51,7 @@
         padding: 10px;
         margin-top: 10px;
         border: none;
-        border-radius: 5px 5px 0 0; /* Set the border-radius for top-left and top-right corners */
+        border-radius: 5px 5px 0 0;
         font-family: 'Candal', sans-serif;
         background: rgba(0, 0, 0, 0.3);
         display: flex;
@@ -67,7 +67,7 @@
     border: none;
     border-radius: 5px;
     font-family: 'Candal', sans-serif;
-    max-width: 100px; /* Set a max-width as per your preference */
+    max-width: 100px;
     }
     .todo-list-item button {
     color: white;
@@ -147,7 +147,7 @@
     }
     .todo-list-item-progress {
         border: none;
-        border-radius: 0 0 5px 5px; /* Set the border-radius for bottom-left and bottom-right corners */
+        border-radius: 0 0 5px 5px;
         font-family: 'Candal', sans-serif;
         background: rgba(0, 0, 0, 0.3);
         display: flex;
