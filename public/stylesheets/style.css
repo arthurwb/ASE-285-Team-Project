@@ -107,6 +107,13 @@ body {
     flex-grow: 2;
 }
 
+.todo-list-item .complete {
+    color: rgb(23, 141, 0);
+    margin-right: 5px;
+    cursor: pointer;
+    text-decoration: none;
+}
+
 .todo-list-item .edit {
     color: rgb(143, 233, 58);
     margin-right: 10px;
@@ -210,4 +217,8 @@ body {
 .recurring-task-startby-and-endby-container {
     display: flex;
     flex-direction: column;
+}
+
+.complete {
+
 }

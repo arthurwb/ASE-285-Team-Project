@@ -50,6 +50,9 @@
 <ul class="todo-list">
   <% todoTasks.forEach(details => { %>
   <li class="todo-list-item">
+  <a href="" class="complete">
+  <span class="fas fa-check"></span>
+  </a>
   <div class="todo-list-item-name"><%= details.title %></div>
   <div class="todo-list-item-date"><%= details.date.toISOString().split('T')[0] %></div>
   <a href="/edit/<%= details._id %>" class="edit">
