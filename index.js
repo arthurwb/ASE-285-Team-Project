@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const TodoTask = require("./models/TodoTask");
+const Users = require("./models/UserData");
 
 main().catch(err => console.log(err));
 
@@ -51,16 +52,50 @@ app.route("/login").get(async (req, res) => {
     console.log(err);
   }
 }).post(async (req, res) => {
-  console.log(req.body);
-  // render todo, with checks so it will send user back to login if the login fails
-  res.render("todo.ejs");
-})
+  try {
+    const { username, password } = req.body;
+    
+    const user = await Users.findOne({ username, password });
+    if (user) {
+      res.send({ success: true });
+    } else {
+      res.send({ success: false, message: "Incorrect username or password" });
+    }
+  } catch (error) {
+    console.error("Error in login:", error);
+    res.send({ success: false, message: "Server error" });
+  }
+});
 
-app.route("/create-account").post(async (req, res) => {
-  console.log(req.body);
-  // add user information into database, render login so they can login properly
-  res.render("login.ejs");
-})
+
+app.route("/create-account").get(async (req, res) => {
+  try {
+    res.render("login.ejs");
+  } catch (err) {
+    console.log(err);
+  }
+}).post(async (req, res) => {
+  try {
+    const existingUser = await Users.findOne({ username: req.body.username });
+    console.log(req.body);
+    if (existingUser) {
+      console.log("User already exists with username: " + req.body.username);
+      res.send({ success: false, message: "Username already exists" });
+    } else {
+      const userData = new Users({
+        username: req.body.username,
+        password: req.body.password
+      });
+      await userData.save();
+      console.log("User created successfully: " + req.body.username);
+      res.send({ success: true, message: "User created successfully" });
+    }
+  } 
+  catch (error) {
+    console.error("Error in creating user:", error);
+    res.send({ success: false, message: "Server error" });
+  }
+});
 
 /* app.get("/", async (req, res) => {
   try {
