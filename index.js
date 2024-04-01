@@ -126,6 +126,108 @@ app.route("/remove/:id").get(async (req, res) => {
   }
 });
 
+//SUBTASKS
+app.route("/subtask/:id").get(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let tasks = await TodoTask.find({_id: id});
+    res.render("todoSubtask.ejs", { todoTask: tasks });
+  } catch (err) {
+    res.send(500, err);
+  }
+})
+.post(async (req, res) => {
+  const id = req.params.id;
+  try {
+    const subtask = req.body;
+    // Perform the update
+    await TodoTask.findByIdAndUpdate(id, {
+      $push: {
+        subtasks: subtask,
+      },
+    });
+    res.redirect(`/subtask/${id}`);
+  } catch (err) {
+    // If there's an error, send the error message back to the client
+    res.send(500, err.message);
+  }
+});
+
+//SUBTASK EDIT
+app.route("/subtaskEdit/:id").get(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let task = await TodoTask.find({"subtasks._id": id});
+    res.render("subtaskEdit.ejs", { todoTask: task, idSubtask: id });
+  } catch (err) {
+    res.send(500, err.message)
+  }
+})
+.post(async (req, res) => {
+  const id = req.params.id;
+  try {
+    const { subtaskTitle, subtaskDate } = req.body;
+    //getting task for id
+    let task = await TodoTask.find({"subtasks._id": id});
+    // Perform the update
+    await TodoTask.findByIdAndUpdate(task[0]._id, {
+      subtasks: task[0].subtasks.map(subtask => {
+        if (subtask._id == id) {
+          subtask.subtaskTitle = subtaskTitle;
+          subtask.subtaskDate = subtaskDate;
+        }
+        return subtask;
+      })
+    });
+    res.redirect(`/subtask/${task[0]._id}`);
+  } catch (err) {
+    // If there's an error, send the error message back to the client
+    res.send(500, err.message);
+  }
+});
+
+//SUBTASK DELETE
+app.route("/subtaskRemove/:id").get(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let task = await TodoTask.find({"subtasks._id": id});
+    // Perform the update
+    await TodoTask.findByIdAndUpdate(task[0]._id, {
+      $pull: {
+        subtasks: {
+          _id: id
+        }
+      }
+    });
+    res.redirect(`/subtask/${task[0]._id}`);
+  } catch (err) {
+    // If there's an error, send the error message back to the client
+    res.send(500, err.message);
+  }
+});
+
+//SUBTASK COMPLETE
+app.route("/subtaskComplete/:id").get(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let task = await TodoTask.find({"subtasks._id": id});
+    // Perform the update
+    await TodoTask.findByIdAndUpdate(task[0]._id, {
+      subtasks: task[0].subtasks.map(subtask => {
+        if (subtask._id == id) {
+          subtask.subtaskCompleted = !subtask.subtaskCompleted;
+        }
+        return subtask;
+      })
+    });
+    res.redirect("/");
+  } catch (err) {
+    // If there's an error, send the error message back to the client
+    res.send(500, err.message);
+  }
+});
+
+
 //GETJSON
 app.get('/json', async (req, res) => {
   try {
