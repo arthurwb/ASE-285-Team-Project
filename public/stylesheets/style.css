@@ -2,106 +2,124 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    }
-    body {
+}
+
+body {
     background: #e27442;
-    }
-    .todo-container {
+}
+
+.todo-container {
     color: white;
     position: absolute;
-    top:50%;
+    top: 50%;
     left: 50%;
     padding: 20px;
     width: 600px;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     background: rgba(255, 255, 255, 0.1);
     border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    }
-    .todo {
+}
+
+.todo {
     width: 400px;
-    }
-    .todo-container h2 {
+}
+
+.todo-container h2 {
     padding: 10px;
-    font-family: 'Candal', sans-serif;
+    font-family: "Candal", sans-serif;
     font-size: 2em;
-    }
-    .todo-header input {
+}
+
+.todo-header input {
     width: 92%;
     border: none;
     border-radius: 5px;
     height: 20px;
-    font-family: 'Candal', sans-serif;
-    }
-    .todo-header button {
+    font-family: "Candal", sans-serif;
+}
+
+.todo-header button {
     color: white;
     border: none;
     border-radius: 50%;
     cursor: pointer;
     padding: 5px;
-    font-family: 'Candal', sans-serif;
+    font-family: "Candal", sans-serif;
     background-color: rgb(51, 212, 100);
-    }
-    .todo-container ul {
+}
+
+.todo-container ul {
     list-style: none;
-    }
-    .todo-list-item {
-        padding: 10px;
-        margin-top: 10px;
-        border: none;
-        border-radius: 5px 5px 0 0;
-        font-family: 'Candal', sans-serif;
-        background: rgba(0, 0, 0, 0.3);
-        display: flex;
-        flex-direction: row;
-    }
-    .todo-list-item form {
+
+}
+
+.todo-list-item {
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 5px;
+    font-family: "Candal", sans-serif;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: row;
+}
+
+.todo-list-item form {
     width: 100%;
     display: flex;
-    }
-    .todo-list-item input {
+}
+
+.todo-list-item input {
     flex-grow: 2;
     margin-right: 20px;
     border: none;
     border-radius: 5px;
-    font-family: 'Candal', sans-serif;
+
+    font-family: "Candal", sans-serif;
     max-width: 100px;
-    }
-    .todo-list-item button {
+    /* Set a max-width as per your preference */
+}
+
+.todo-list-item button {
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     padding: 5px;
-    font-family: 'Candal', sans-serif;
+    font-family: "Candal", sans-serif;
     background-color: rgb(51, 212, 100);
-    }
-    .todo-list-item .cancel {
+}
+
+.todo-list-item .cancel {
     color: white;
     text-decoration: none;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     padding: 5px;
-    font-family: 'Candal', sans-serif;
+    font-family: "Candal", sans-serif;
     background-color: rgb(223, 43, 43);
     margin-left: 5px;
-    }
-    .todo-list-item div {
+}
+
+.todo-list-item div {
     flex-grow: 2;
-    }
-    .todo-list-item .edit {
-    color : rgb(143, 233, 58);
+}
+
+.todo-list-item .edit {
+    color: rgb(143, 233, 58);
     margin-right: 10px;
-    cursor:pointer;
+    cursor: pointer;
     text-decoration: none;
-    }
-    .todo-list-item .remove {
-    color : rgb(243, 96, 96);
+}
+
+.todo-list-item .remove {
+    color: rgb(243, 96, 96);
     margin-right: 5px;
-    cursor:pointer;
+    cursor: pointer;
     text-decoration: none;
     }
     .dropdown {
@@ -156,3 +174,60 @@
     .todo-list-item-progress span {
         padding-right: 5px;
     }
+
+.login-container {
+    color: white;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    width: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    text-align: center;
+}
+
+.login-container h2 {
+    font-family: "Candal", sans-serif;
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.login-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 5px;
+    font-family: "Candal", sans-serif;
+}
+
+.login-form button {
+    width: 100%;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    font-family: "Candal", sans-serif;
+    background-color: rgb(51, 212, 100);
+}
+.login-form button:hover {
+    background-color: rgb(26, 138, 65);
+}
+
+.create-account-toggle {
+    width: 100%;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    margin-top: 5px;
+    font-family: "Candal", sans-serif;
+    background-color: rgb(36, 192, 231);
+}
+.create-account-toggle:hover {
+    background-color: rgb(25, 136, 164);
+}
