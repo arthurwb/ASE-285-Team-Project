@@ -15,12 +15,12 @@
   <div class="recurring-task-container">
     <div class="recurring-task-checkbox-container">
       <label for="recurring-task-checkbox">Recurring Task?</label>
-      <input type="checkbox" id="recurring-task-checkbox" name="recurring-task-checkbox" value="true">
+      <input type="checkbox" id="recurring-task-checkbox" name="isRecurring" value="true">
     </div>
     <div class="recurring-task-options-container">
       <div class="recurring-task-frequency-and-interval-container">
         <div class="recurring-task-frequency-and-interval-container-item">
-          <label for="frequency" id="frequencyLabel">Frequency</label>
+          <label for="frequency" id="frequencyLabel">*Frequency</label>
           <select name="frequency" id="frequency">
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
@@ -29,13 +29,13 @@
           </select>
         </div>
         <div class="recurring-task-frequency-and-interval-container-item">
-          <label for="interval">Interval</label>
+          <label for="interval">*Interval</label>
           <input type="number" id="interval" name="interval" min="1" value="1">
         </div>
       </div>
       <div class="recurring-task-startby-and-endby-container">
         <div class="recurring-task-startby-and-endby-container-item">
-          <label for="startBy">Start Date</label>
+          <label for="startBy">*Start Date</label>
           <input type="date" id="startBy" name="startBy">
         </div>
         <div class="recurring-task-startby-and-endby-container-item"></div>
