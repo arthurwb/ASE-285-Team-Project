@@ -183,7 +183,6 @@ body {
     flex-direction: column;
     align-items: center;
 }
-
-.recurring-task-container label {
-    margin-bottom: 3px;
+.recurring-task-options-container {
+    display: none;
 }

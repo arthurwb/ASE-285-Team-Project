@@ -17,7 +17,22 @@
       <label for="recurring-task-checkbox">Recurring Task?</label>
       <input type="checkbox" id="recurring-task-checkbox" name="recurring-task-checkbox" value="true">
     </div>
-</div>
+    <div class="recurring-task-options-container">
+      <label for="frequency" id="frequencyLabel">Frequency</label>
+      <select name="frequency" id="frequency">
+        <option value="daily">Daily</option>
+        <option value="weekly">Weekly</option>
+        <option value="monthly">Monthly</option>
+        <option value="yearly">Yearly</option>
+      </select>
+      <label for="interval">Interval</label>
+      <input type="number" id="interval" name="interval" min="1" value="1">
+      <label for="startBy">Start Date</label>
+      <input type="date" id="startBy" name="startBy">
+      <label for="endBy">End Date</label>
+      <input type="date" id="endBy" name="endBy">
+    </div>
+  </div>
 </form>
 
 <ul class="todo-list">
@@ -37,4 +52,21 @@
 
 </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    let checkbox = document.getElementById('recurring-task-checkbox');
+    let recurringTaskOptions = document.querySelector('.recurring-task-options-container');
+
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        recurringTaskOptions.style.display = 'flex';
+      }
+      else {
+        recurringTaskOptions.style.display = 'none';
+      }
+    });
+  })
+</script>
+
 </body>
