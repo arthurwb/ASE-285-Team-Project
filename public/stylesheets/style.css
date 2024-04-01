@@ -186,3 +186,28 @@ body {
 .recurring-task-options-container {
     display: none;
 }
+
+.recurring-task-frequency-and-interval-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.recurring-task-frequency-and-interval-container-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.recurring-task-frequency-and-interval-container-item > select {
+    width: 80px;
+    box-sizing: border-box;
+}
+
+.recurring-task-frequency-and-interval-container-item > input {
+    width: 80px;
+    box-sizing: border-box;
+}
+
+.recurring-task-startby-and-endby-container {
+    display: flex;
+    flex-direction: column;
+}

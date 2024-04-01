@@ -18,19 +18,31 @@
       <input type="checkbox" id="recurring-task-checkbox" name="recurring-task-checkbox" value="true">
     </div>
     <div class="recurring-task-options-container">
-      <label for="frequency" id="frequencyLabel">Frequency</label>
-      <select name="frequency" id="frequency">
-        <option value="daily">Daily</option>
-        <option value="weekly">Weekly</option>
-        <option value="monthly">Monthly</option>
-        <option value="yearly">Yearly</option>
-      </select>
-      <label for="interval">Interval</label>
-      <input type="number" id="interval" name="interval" min="1" value="1">
-      <label for="startBy">Start Date</label>
-      <input type="date" id="startBy" name="startBy">
-      <label for="endBy">End Date</label>
-      <input type="date" id="endBy" name="endBy">
+      <div class="recurring-task-frequency-and-interval-container">
+        <div class="recurring-task-frequency-and-interval-container-item">
+          <label for="frequency" id="frequencyLabel">Frequency</label>
+          <select name="frequency" id="frequency">
+            <option value="daily">Daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="yearly">Yearly</option>
+          </select>
+        </div>
+        <div class="recurring-task-frequency-and-interval-container-item">
+          <label for="interval">Interval</label>
+          <input type="number" id="interval" name="interval" min="1" value="1">
+        </div>
+      </div>
+      <div class="recurring-task-startby-and-endby-container">
+        <div class="recurring-task-startby-and-endby-container-item">
+          <label for="startBy">Start Date</label>
+          <input type="date" id="startBy" name="startBy">
+        </div>
+        <div class="recurring-task-startby-and-endby-container-item"></div>
+          <label for="endBy">End Date</label>
+          <input type="date" id="endBy" name="endBy">
+        </div>
+      </div>
     </div>
   </div>
 </form>
@@ -57,10 +69,17 @@
   document.addEventListener('DOMContentLoaded', () => {
     let checkbox = document.getElementById('recurring-task-checkbox');
     let recurringTaskOptions = document.querySelector('.recurring-task-options-container');
+    let recurringTaskOptionsItems = recurringTaskOptions.querySelectorAll('.recurring-task-startby-and-endby-container-item.recurring-task-frequency-and-interval-container-item');
 
     checkbox.addEventListener('change', () => {
       if (checkbox.checked) {
         recurringTaskOptions.style.display = 'flex';
+        recurringTaskOptions.style.flexDirection = 'row';
+        recurringTaskOptions.style.justifyContent = 'space-evenly';
+
+        // recurringTaskOptionsItems.forEach((item) => {
+        //   item.style.margin = '0 100px';
+        // });
       }
       else {
         recurringTaskOptions.style.display = 'none';
