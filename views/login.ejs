@@ -48,7 +48,7 @@
       });
 
       $('#create-account-form').submit(function (event) {
-        event.preventDefault(); // Prevent the default form submission
+        event.preventDefault();
         
         const username = $('#createUsername').val();
         const password = $('#createPassword').val();
@@ -63,16 +63,13 @@
             data: $('#create-account-form').serialize(),
             success: function (response) {
             if (response.success) {
-                // If user creation is successful, redirect to login page
                 alert(response.message);
                 window.location.href = "/";
             } else {
-                // If user creation fails, display error message
                 alert(response.message);
             }
             },
             error: function (xhr, status, error) {
-            // If there's a server error, display generic error message
             alert("Server error: " + error);
             }
         });

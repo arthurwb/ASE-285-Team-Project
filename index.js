@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
 dotenv.config();
 
 const TodoTask = require("./models/TodoTask");
@@ -18,16 +20,25 @@ async function main() {
 app.set("view engine", "ejs");
 app.use("/static", express.static("public"));
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use(session({
+  secret: "testEnv",
+  saveUninitialized: true,
+  resave: true
+}));
 
 // CRUD processing
 
 app.route("/").get(async (req, res) => {
   try {
     const tasks = await TodoTask.find({})
-    res.render("todo.ejs", { todoTasks: tasks });
+    if (!req.session.user) {throw new ("not logged in")}
+    res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
   }
   catch (err) {
     console.error(err);
+    res.render("login.ejs");
   }
 }).post(async (req, res) => {
   const todoTask = new TodoTask({
@@ -57,6 +68,8 @@ app.route("/login").get(async (req, res) => {
     
     const user = await Users.findOne({ username, password });
     if (user) {
+      req.session.user = username;
+      req.session.save();
       res.send({ success: true });
     } else {
       res.send({ success: false, message: "Incorrect username or password" });
