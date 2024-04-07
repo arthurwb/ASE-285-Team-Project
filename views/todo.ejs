@@ -50,12 +50,12 @@
 <ul class="todo-list">
   <% todoTasks.forEach(details => { %>
   <li class="todo-list-item">
-  <a href="" class="complete">
+  <a data-id="<%= details._id %>" class="complete">
   <span class="fas fa-check"></span>
   </a>
   <div class="todo-list-item-name"><%= details.title %></div>
   <div class="todo-list-item-date"><%= details.date.toISOString().split('T')[0] %></div>
-  <a href="/edit/<%= details._id %>" class="edit">
+  <a href="/edit/<%= details._id %>" href="#" class="edit">
   <span class="fas fa-edit"></span>
   </a>
   <a href="/remove/<%= details._id %>" class="remove">
@@ -79,16 +79,26 @@
         recurringTaskOptions.style.display = 'flex';
         recurringTaskOptions.style.flexDirection = 'row';
         recurringTaskOptions.style.justifyContent = 'space-evenly';
-
-        // recurringTaskOptionsItems.forEach((item) => {
-        //   item.style.margin = '0 100px';
-        // });
       }
       else {
         recurringTaskOptions.style.display = 'none';
       }
     });
-  })
+  });
+
+  document.querySelectorAll('.complete').forEach(e => {
+    const taskId = e.dataset.id;
+    e.addEventListener('click', () => {
+      fetch(`/complete/${taskId}`, {
+        method: 'PATCH',
+        redirect:'follow'
+      })
+      .then(res => {
+        window.location.href = res.url;
+      })
+      .catch(err => console.error(err));
+  });
+  });
 </script>
 
 </body>

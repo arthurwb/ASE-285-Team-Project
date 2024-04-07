@@ -102,13 +102,16 @@ app.post('/', async (req, res) => {
 
 //COMPLETE
 app.route("/complete/:id")
-.post(async (req, res) => {
+.patch(async (req, res) => {
   const id = req.params.id;
   const completionDate = new Date();
   try {
-    await TodoTask.findOneAndUpdate({_id: id}, {$push: {completions: {date: completionDate}}}, {new: true});
+    let completedTask = await TodoTask.findOneAndUpdate({_id: id}, {$push: {completions: {date: completionDate}}}, {new: true});
+    if (!completedTask.isRecurring) {
+      await TodoTask.deleteOne({_id: completedTask.id});
+    }
 
-    res.status(200).end();
+    res.redirect('/');
   } catch (err) {
     res.status(500).send(err);
   }
