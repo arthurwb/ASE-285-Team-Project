@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const TodoTask = require("./models/TodoTask");
+const CompletedRecurringTask = require('./models/CompletedRecurringTask');
 
 main().catch(err => console.log(err));
 
@@ -99,6 +100,23 @@ app.post('/', async (req, res) => {
     }
 });
 */
+
+//COMPLETE
+app.route("/complete/:id")
+.post(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let completedRecurringTask = await TodoTask.findById(id);
+    completedRecurringTaskObject = completedRecurringTask.toObject();
+    completedRecurringTaskObject.dateCompleted = new Date();
+    await CompletedRecurringTask.create(completedRecurringTaskObject);
+
+    res.status(200).end();
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
 //UPDATE
 app.route("/edit/:id")
 .get(async (req, res) => {
