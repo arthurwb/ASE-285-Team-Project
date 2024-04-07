@@ -7,14 +7,16 @@ dotenv.config();
 const TodoTask = require("./models/TodoTask");
 
 main().catch(err => console.log(err));
+const server = app.listen(3000, () => console.log("Server Up and running"));
+
 
 async function main() {
   await mongoose.connect(process.env.URI);
   console.log("Connected to db!");
-  app.listen(3000, () => console.log("Server Up and running"));
 }
 
 app.set("view engine", "ejs");
+app.use(express.json());
 app.use("/static", express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 
@@ -23,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.route("/").get(async (req, res) => {
   try {
     const tasks = await TodoTask.find({})
+    res.status(200).send(tasks);
     res.render("todo.ejs", { todoTasks: tasks });
   }
   catch (err) {
@@ -110,7 +113,6 @@ app.route("/edit/:id")
     });
     res.redirect("/");
   } catch (err) {
-    // If there's an error, send the error message back to the client
     res.send(500, err.message);
   }
 });
@@ -133,7 +135,7 @@ app.route("/subtask/:id").get(async (req, res) => {
     let tasks = await TodoTask.find({_id: id});
     res.render("todoSubtask.ejs", { todoTask: tasks });
   } catch (err) {
-    res.send(500, err);
+    console.error(err);
   }
 })
 .post(async (req, res) => {
@@ -148,8 +150,7 @@ app.route("/subtask/:id").get(async (req, res) => {
     });
     res.redirect(`/subtask/${id}`);
   } catch (err) {
-    // If there's an error, send the error message back to the client
-    res.send(500, err.message);
+    res.status(500).send(err);
   }
 });
 
@@ -181,7 +182,6 @@ app.route("/subtaskEdit/:id").get(async (req, res) => {
     });
     res.redirect(`/subtask/${task[0]._id}`);
   } catch (err) {
-    // If there's an error, send the error message back to the client
     res.send(500, err.message);
   }
 });
@@ -201,7 +201,6 @@ app.route("/subtaskRemove/:id").get(async (req, res) => {
     });
     res.redirect(`/subtask/${task[0]._id}`);
   } catch (err) {
-    // If there's an error, send the error message back to the client
     res.send(500, err.message);
   }
 });
@@ -222,7 +221,6 @@ app.route("/subtaskComplete/:id").get(async (req, res) => {
     });
     res.redirect("/");
   } catch (err) {
-    // If there's an error, send the error message back to the client
     res.send(500, err.message);
   }
 });
@@ -238,3 +236,5 @@ app.get('/json', async (req, res) => {
     res.status(500).send('An error occurred while fetching tasks.' );
   }
 });
+
+module.exports = { app, server, main };
