@@ -49,6 +49,49 @@
 
 <ul class="todo-list">
   <% todoTasks.forEach(details => { %>
+  <%
+    const frequency = details.recurrence.frequency;
+    const completionDates = details.completions;
+    let currentDate = new Date();
+    let nextDate;
+    let isVisible = true;
+    
+
+    if (completionDates.length != 0) {
+      isVisible = false;
+      let latestCompletionDate = completionDates.reduce((a, b) => new Date(a.date) > new Date(b.date) ? a : b).date;
+      if (frequency === 'daily') {
+        if (latestCompletionDate.getFullYear() != currentDate.getFullYear() || latestCompletionDate.getMonth() != currentDate.getMonth() || latestCompletionDate.getDate() != currentDate.getDate()) {
+          isVisible = true;
+        }
+      }
+      else if (frequency === 'weekly') {
+        nextDate = new Date(latestCompletionDate);
+        nextDate.setDate(nextDate.getDate() + 7);
+
+        if (currentDate >= nextDate) {
+          isVisible = true;
+        }
+      }
+      else if (frequency === 'monthly') {
+        nextDate = new Date(latestCompletionDate);
+        nextDate.setMonth(nextDate.getMonth() + 1);
+
+        if (currentDate >= nextDate) {
+          isVisible = true;
+        }
+      }
+      else if (frequency === 'yearly') {
+        nextDate = new Date(latestCompletionDate);
+        nextDate.setFullYear(nextDate.getFullYear() + 1);
+
+        if (currentDate >= nextDate) {
+          isVisible = true;
+        }
+      }
+    }
+
+  if (isVisible) { %>
   <li class="todo-list-item">
   <a data-id="<%= details._id %>" class="complete">
   <span class="fas fa-check"></span>
@@ -62,6 +105,7 @@
   <span class="fas fa-times"></span>
   </a>
   </li>
+  <% } %>
   <% }) %>
 </ul>
 
