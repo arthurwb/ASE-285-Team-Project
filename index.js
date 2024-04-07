@@ -24,8 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.route("/").get(async (req, res) => {
   try {
-    const tasks = await TodoTask.find({})
-    res.status(200).send(tasks);
+    const tasks = await TodoTask.find({});
     res.render("todo.ejs", { todoTasks: tasks });
   }
   catch (err) {
