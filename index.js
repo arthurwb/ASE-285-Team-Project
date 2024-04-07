@@ -5,7 +5,6 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const TodoTask = require("./models/TodoTask");
-// const CompletedRecurringTask = require('./models/CompletedRecurringTask');
 
 main().catch(err => console.log(err));
 
