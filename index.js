@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const express = require("express");
+const bodyParser = require("body-parser"); 
 const app = express();
 const dotenv = require("dotenv");
 dotenv.config();
@@ -17,8 +18,14 @@ async function main() {
 app.set("view engine", "ejs");
 app.use("/static", express.static("public"));
 app.use(express.urlencoded({ extended: true }));
+// Configure body-parser middleware
+app.use(bodyParser.json()); // Parse JSON request body
+app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded request body
+
 
 // CRUD processing
+
+module.exports = app;
 
 app.route("/").get(async (req, res) => {
   try {
@@ -106,7 +113,8 @@ app.route("/edit/:id")
     // Perform the update
     await TodoTask.findByIdAndUpdate(id, {
       title: title,
-      date: parsedDate
+      date: parsedDate,
+      tag: req.body.tag
     });
     res.redirect("/");
   } catch (err) {
@@ -125,6 +133,31 @@ app.route("/remove/:id").get(async (req, res) => {
     res.send(500, err);
   }
 });
+
+//TAG SEARCH
+// Render the page with the form
+app.get('/tag', function(req, resp) { 
+
+  try {
+    resp.status(500).render('todoTagSearch.ejs')
+  } catch (e) {
+    console.error(e);
+  } 
+});
+
+app.post("/tag", async (req, res) => {
+   console.log("tag function");
+   console.log(req.body)
+  try {
+    const tasks = await TodoTask.find({tag: req.body.tag}).sort({_id: 1})
+    console.log(tasks)
+    res.status(200).render("todo.ejs", { todoTasks: tasks });
+  }
+  catch (err) {
+    console.error(err); 
+  }
+});
+
 
 //SUBTASKS
 app.route("/subtask/:id").get(async (req, res) => {

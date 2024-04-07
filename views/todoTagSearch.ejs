@@ -1,0 +1,25 @@
+
+<!DOCTYPE html>
+<head>
+    <title>Todo App</title>
+    <%- include('common_head.ejs') %>
+</head>
+<body>
+<div class="todo-container">
+<h2>Search By Tag</h2>
+<div class="todo">
+
+<form action="/tag" method="POST" class="todo-header">
+  <label for="tag">Select a tag:</label>
+  <select name="tag" id="tag">
+    <option value="Misc">Misc</option>
+    <option value="Home">Home</option>
+    <option value="Work">Work</option>
+    <option value="Study">Study</option>
+  </select>
+  <button type="submit"><span class="fas fa-plus"></span></button>
+</form>
+
+</div>
+</div>
+</body>
