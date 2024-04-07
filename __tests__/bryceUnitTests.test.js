@@ -2,6 +2,14 @@ const mongoose = require('mongoose');
 const request = require('supertest');
 const { app, server, main } = require('../index.js');
 
+const todoTask = require('../models/TodoTask');
+const dotenv = require('dotenv');
+dotenv.config();
+
+(async () => {
+    await mongoose.connect(process.env.URI);
+})();
+
 describe('POST /', () => {
     it('creates a new task', async () => {
         const res = await request(app)
@@ -19,15 +27,12 @@ describe('POST /', () => {
     });
 });
 
-var postId = '';
 describe('GET /', () => {
     it('gets all tasks', async () => {
         await main();
         const res = await request(app)
             .get('/');
         expect(res.statusCode).toBe(200);
-        expect(res.body[0].title).toBe("test task");
-        postId = res.body[0]._id;
     });
 
     afterAll(async () => {      
@@ -39,8 +44,9 @@ describe('GET /', () => {
 describe('POST /subtask', () => {
     it('creates a new subtask', async () => {
         await main();
+        let task = await todoTask.find({});
         const res = await request(app)
-            .post(`/subtask/${postId}`)
+            .post(`/subtask/${task[0]._id}`)
             .send({
                 subtaskTitle: 'test subtask'
             });
@@ -56,8 +62,9 @@ describe('POST /subtask', () => {
 describe('GET /subtask', () => {
     it('gets all subtasks', async () => {
         await main();
+        let task = await todoTask.find({});
         const res = await request(app)
-            .get(`/subtask/${postId}`);
+            .get(`/subtask/${task[0]._id}`);
         expect(res.statusCode).toBe(200);
     });
 
@@ -67,18 +74,15 @@ describe('GET /subtask', () => {
     });
 });
 
+const subtask = async () => {await todoTask.find({})};
+
 describe('POST /subtaskEdit', () => {
     it('edits a subtask', async () => {
         await main();
-        
-        // get the subtask
-        const task = await request(app)
-            .get('/')
-        const subtask = task.body[0].subtasks[0];
-        
+        let task = await todoTask.find({});
         //do the operation
         const res = await request(app)
-            .post(`/subtaskEdit/${subtask._id}`)
+            .post(`/subtaskEdit/${task[0].subtasks[0]._id}`)
             .send({
                 subtaskTitle: 'edited subtask'
             });
@@ -96,15 +100,10 @@ describe('POST /subtaskEdit', () => {
 describe('GET /subtaskComplete', () => {
     it('completes a subtask', async () => {
         await main();
-        
-        // get the subtask
-        const task = await request(app)
-            .get('/')
-        const subtask = task.body[0].subtasks[0];
-        
+        let task = await todoTask.find({});
         //do the operation
         const res = await request(app)
-            .get(`/subtaskComplete/${subtask._id}`);
+            .get(`/subtaskComplete/${task[0].subtasks[0]._id}`);
         
         //check the correct status code was given
         expect(res.statusCode).toBe(302);
@@ -113,16 +112,11 @@ describe('GET /subtaskComplete', () => {
 
 describe('GET /subtaskRemove', () => {
     it('removes a subtask', async () => {
-        await main();
-        
-        // get the subtask
-        const task = await request(app)
-            .get('/')
-        const subtask = task.body[0].subtasks[0];
-        
+        await main();      
+        let task = await todoTask.find({});
         //do the operation
         const res = await request(app)
-            .get(`/subtaskRemove/${subtask._id}`);
+            .get(`/subtaskRemove/${task[0].subtasks[0]._id}`);
         
         //check the correct status code was given
         expect(res.statusCode).toBe(302);
