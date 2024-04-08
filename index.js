@@ -3,9 +3,12 @@ const express = require("express");
 const bodyParser = require("body-parser"); 
 const app = express();
 const dotenv = require("dotenv");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
 dotenv.config();
 
 const TodoTask = require("./models/TodoTask");
+const Users = require("./models/UserData");
 
 main().catch(err => console.log(err));
 
@@ -21,7 +24,13 @@ app.use(express.urlencoded({ extended: true }));
 // Configure body-parser middleware
 app.use(bodyParser.json()); // Parse JSON request body
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded request body
+app.use(cookieParser());
 
+app.use(session({
+  secret: "testEnv",
+  saveUninitialized: true,
+  resave: true
+}));
 
 // CRUD processing
 
@@ -30,10 +39,12 @@ module.exports = app;
 app.route("/").get(async (req, res) => {
   try {
     const tasks = await TodoTask.find({})
-    res.render("todo.ejs", { todoTasks: tasks });
+    if (!req.session.user) {throw new ("not logged in")}
+    res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
   }
   catch (err) {
     console.error(err);
+    res.render("login.ejs");
   }
 }).post(async (req, res) => {
   const todoTask = new TodoTask({
@@ -58,16 +69,52 @@ app.route("/login").get(async (req, res) => {
     console.log(err);
   }
 }).post(async (req, res) => {
-  console.log(req.body);
-  // render todo, with checks so it will send user back to login if the login fails
-  res.render("todo.ejs");
-})
+  try {
+    const { username, password } = req.body;
+    
+    const user = await Users.findOne({ username, password });
+    if (user) {
+      req.session.user = username;
+      req.session.save();
+      res.send({ success: true });
+    } else {
+      res.send({ success: false, message: "Incorrect username or password" });
+    }
+  } catch (error) {
+    console.error("Error in login:", error);
+    res.send({ success: false, message: "Server error" });
+  }
+});
 
-app.route("/create-account").post(async (req, res) => {
-  console.log(req.body);
-  // add user information into database, render login so they can login properly
-  res.render("login.ejs");
-})
+
+app.route("/create-account").get(async (req, res) => {
+  try {
+    res.render("login.ejs");
+  } catch (err) {
+    console.log(err);
+  }
+}).post(async (req, res) => {
+  try {
+    const existingUser = await Users.findOne({ username: req.body.username });
+    console.log("user create: " + req.body.username);
+    if (existingUser) {
+      console.log("User already exists with username: " + req.body.username);
+      res.send({ success: false, message: "Username already exists" });
+    } else {
+      const userData = new Users({
+        username: req.body.username,
+        password: req.body.password
+      });
+      await userData.save();
+      console.log("User created successfully: " + req.body.username);
+      res.send({ success: true, message: "User created successfully" });
+    }
+  } 
+  catch (error) {
+    console.error("Error in creating user:", error);
+    res.send({ success: false, message: "Server error" });
+  }
+});
 
 /* app.get("/", async (req, res) => {
   try {
@@ -271,3 +318,5 @@ app.get('/json', async (req, res) => {
     res.status(500).send('An error occurred while fetching tasks.' );
   }
 });
+
+module.exports = app;
