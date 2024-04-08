@@ -90,7 +90,7 @@ app.route("/create-account").get(async (req, res) => {
 }).post(async (req, res) => {
   try {
     const existingUser = await Users.findOne({ username: req.body.username });
-    console.log(req.body);
+    console.log("user create: " + req.body.username);
     if (existingUser) {
       console.log("User already exists with username: " + req.body.username);
       res.send({ success: false, message: "Username already exists" });
@@ -286,3 +286,5 @@ app.get('/json', async (req, res) => {
     res.status(500).send('An error occurred while fetching tasks.' );
   }
 });
+
+module.exports = app;

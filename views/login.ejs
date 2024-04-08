@@ -30,6 +30,8 @@
           alert("Please enter both username and password");
           return;
         }
+        console.log("TEST" + $('#login-form').serialize());
+        alert("pause");
         $.ajax({
           type: 'POST',
           url: '/login',
