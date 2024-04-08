@@ -23,7 +23,11 @@ const todoTaskSchema = new mongoose.Schema({
         default: false
       }
     }
-  ]
+  ],
+  tag: {
+    type: String,
+    default: "Misc"
+  }
 })
 module.exports = mongoose.model('TodoTask',todoTaskSchema);
 
