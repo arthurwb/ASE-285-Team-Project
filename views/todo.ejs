@@ -1,223 +1,164 @@
 <!DOCTYPE html>
+
 <head>
-<title>Todo App</title>
+  <title>Todo App</title>
   <%- include('common_head.ejs') %>
 </head>
 
 <body>
-<div class="todo-container">
-<h2>To-Do List</h2>
-<div class="todo">
+  <div class="todo-container">
+    <h2>To-Do List</h2>
+    <div class="todo">
 
-<form action="/" method="POST" class="todo-header">
-  <input type="text" name="title">
-  <button type="submit"><span class="fas fa-plus"></span></button>
-  <div class="recurring-task-container">
-    <div class="recurring-task-checkbox-container">
-      <label for="recurring-task-checkbox">Recurring Task?</label>
-      <input type="checkbox" id="recurring-task-checkbox" name="isRecurring" value="true">
-    </div>
-    <div class="recurring-task-options-container">
-      <div class="recurring-task-frequency-and-interval-container">
-        <div class="recurring-task-frequency-and-interval-container-item">
-          <label for="frequency" id="frequencyLabel">*Frequency</label>
-          <select name="frequency" id="frequency">
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="monthly">Monthly</option>
-            <option value="yearly">Yearly</option>
-          </select>
+      <form action="/" method="POST" class="todo-header">
+        <input type="text" name="title">
+        <button type="submit"><span class="fas fa-plus"></span></button>
+        <div class="recurring-task-container">
+          <div class="recurring-task-checkbox-container">
+            <label for="recurring-task-checkbox">Recurring Task?</label>
+            <input type="checkbox" id="recurring-task-checkbox" name="isRecurring" value="true">
+          </div>
+          <div class="recurring-task-options-container">
+            <div class="recurring-task-frequency-and-interval-container">
+              <div class="recurring-task-frequency-and-interval-container-item">
+                <label for="frequency" id="frequencyLabel">*Frequency</label>
+                <select name="frequency" id="frequency">
+                  <option value="daily">Daily</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+              </div>
+              <div class="recurring-task-frequency-and-interval-container-item">
+                <label for="interval">*Interval</label>
+                <input type="number" id="interval" name="interval" min="1" value="1">
+              </div>
+            </div>
+            <div class="recurring-task-startby-and-endby-container">
+              <div class="recurring-task-startby-and-endby-container-item">
+                <label for="startBy">*Start Date</label>
+                <input type="date" id="startBy" name="startBy" value="<%= new Date().toLocaleDateString('en-CA') %>">
+              </div>
+              <div class="recurring-task-startby-and-endby-container-item">
+                <label for="endBy">End Date</label>
+                <input type="date" id="endBy" name="endBy">
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="recurring-task-frequency-and-interval-container-item">
-          <label for="interval">*Interval</label>
-          <input type="number" id="interval" name="interval" min="1" value="1">
-        </div>
-      </div>
-      <div class="recurring-task-startby-and-endby-container">
-        <div class="recurring-task-startby-and-endby-container-item">
-          <label for="startBy">*Start Date</label>
-          <input type="date" id="startBy" name="startBy" value="<%= new Date().toLocaleDateString('en-CA') %>">
-        </div>
-        <div class="recurring-task-startby-and-endby-container-item">
-          <label for="endBy">End Date</label>
-          <input type="date" id="endBy" name="endBy">
-        </div>
-      </div>
-    </div>
-  </div>
-</form>
+      </form>
 
-<ul class="todo-list">
-  <% todoTasks.forEach(details => { %>
-  <%
-    const frequency = details.recurrence.frequency;
-    const interval = details.recurrence.interval || 1;
-    const completionDates = details.completions;
-    const startDate = new Date(details.recurrence.startBy);
-    let endDate;
-    if (details.recurrence.endBy != null) {
-      endDate = new Date(details.recurrence.endBy);
-    }
-    else {
-      endDate = null;
-    }
-    let currentDate = new Date();
-    let nextDate;
-    let isVisible = true;
-    
-    console.log(currentDate);
-    if (details.isRecurring && (currentDate < startDate || (currentDate >= endDate && endDate != null))) {
-      console.log('its set');
-      console.log(endDate);
-      isVisible = false;
-    }
-
-
-    if (completionDates.length != 0) {
-      isVisible = false;
-      let latestCompletionDate = completionDates.reduce((a, b) => new Date(a.date) > new Date(b.date) ? a : b).date;
-      if (frequency === 'daily') {
-        nextDate = new Date(latestCompletionDate);
-        nextDate.setDate(nextDate.getDate() + interval);
-        if (currentDate >= nextDate) {
-          isVisible = true;
-        }
-      }
-      else if (frequency === 'weekly') {
-        nextDate = new Date(latestCompletionDate);
-        nextDate.setDate(nextDate.getDate() + 7 * interval);
-
-        if (currentDate >= nextDate) {
-          isVisible = true;
-        }
-      }
-      else if (frequency === 'monthly') {
-        nextDate = new Date(latestCompletionDate);
-        nextDate.setMonth(nextDate.getMonth() + interval);
-
-        if (currentDate >= nextDate) {
-          isVisible = true;
-        }
-      }
-      else if (frequency === 'yearly') {
-        nextDate = new Date(latestCompletionDate);
-        nextDate.setFullYear(nextDate.getFullYear() + interval);
-
-        if (currentDate >= nextDate) {
-          isVisible = true;
-        }
-      }
-    }
-
-  if (isVisible) { %>
-  <li class="todo-list-item" data-paused="<%= details.recurrence.isPaused %>">
-    <div class="todo-list-item-content">
-      <a data-id="<%= details._id %>" class="complete">
-        <span class="fas fa-check"></span>
-      </a>
-      <div class="todo-list-item-name">
-        <%= details.title %>
-      </div>
-      <div class="todo-list-item-date">
-        <%= details.date.toISOString().split('T')[0] %>
-      </div>
-      <a href="/edit/<%= details._id %>" href="#" class="edit">
-        <span class="fas fa-edit"></span>
-      </a>
-      <a href="/remove/<%= details._id %>" class="remove">
-        <span class="fas fa-times"></span>
-      </a>
-    </div>
-    <% if (details.isRecurring) { %>
-      <div class="recurring-label">Recurring <%= details.recurrence.frequency.charAt(0).toUpperCase() +
-          details.recurrence.frequency.slice(1) %>
-      </div>
-      <div class="pause-and-resume-buttons">
-        <% if (details.isRecurring) { if (details.recurrence.isPaused) { %> <a data-id="<%= details._id %>"
-            class="resume"><i class="fas fa-solid fa-play"></i></a>
-          <% } else { %> <a data-id="<%= details._id %>" class="pause"><i class="fas fa-solid fa-pause"></i></a>
-            <% } } %>
-              <% } %>
-      </div>
-  </li>
-  <% } %>
-    <% }) %>
+      <ul class="todo-list">
+        <% todoTasks.forEach(details=> {
+          if (details.isVisible) { %>
+          <li class="todo-list-item" data-paused="<%= details.recurrence.isPaused %>">
+            <div class="todo-list-item-content">
+              <a data-id="<%= details._id %>" class="complete">
+                <span class="fas fa-check"></span>
+              </a>
+              <div class="todo-list-item-name">
+                <%= details.title %>
+              </div>
+              <div class="todo-list-item-date">
+                <%= details.date.toISOString().split('T')[0] %>
+              </div>
+              <a href="/edit/<%= details._id %>" href="#" class="edit">
+                <span class="fas fa-edit"></span>
+              </a>
+              <a href="/remove/<%= details._id %>" class="remove">
+                <span class="fas fa-times"></span>
+              </a>
+            </div>
+            <% if (details.isRecurring) { %>
+              <div class="recurring-label">Recurring <%= details.recurrence.frequency.charAt(0).toUpperCase() +
+                  details.recurrence.frequency.slice(1) %>
+              </div>
+              <div class="pause-and-resume-buttons">
+                <% if (details.isRecurring) { if (details.recurrence.isPaused) { %> <a data-id="<%= details._id %>"
+                    class="resume"><i class="fas fa-solid fa-play"></i></a>
+                  <% } else { %> <a data-id="<%= details._id %>" class="pause"><i class="fas fa-solid fa-pause"></i></a>
+                    <% } } %>
+                      <% } %>
+              </div>
+          </li>
+          <% } %>
+            <% }) %>
       </ul>
+    </div>
   </div>
-</div>
 
-<script>
-  window.onload = () => {
-    document.querySelectorAll('.todo-list-item').forEach((e) => {
-      if (e.dataset.paused == 'true') {
-        e.style.opacity = '0.5';
-        e.querySelectorAll('a').forEach((anchor) => {
-        anchor.addEventListener('click', (e) => {
-          e.preventDefault();
-        });
+  <script>
+    window.onload = () => {
+      document.querySelectorAll('.todo-list-item').forEach((e) => {
+        if (e.dataset.paused == 'true') {
+          e.style.opacity = '0.5';
+          e.querySelectorAll('a').forEach((anchor) => {
+            anchor.addEventListener('click', (e) => {
+              e.preventDefault();
+            });
+          });
+        }
       });
-      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      let checkbox = document.getElementById('recurring-task-checkbox');
+      let recurringTaskOptions = document.querySelector('.recurring-task-options-container');
+      let recurringTaskOptionsItems = recurringTaskOptions.querySelectorAll('.recurring-task-startby-and-endby-container-item.recurring-task-frequency-and-interval-container-item');
+
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked) {
+          recurringTaskOptions.style.display = 'flex';
+          recurringTaskOptions.style.flexDirection = 'row';
+          recurringTaskOptions.style.justifyContent = 'space-evenly';
+        }
+        else {
+          recurringTaskOptions.style.display = 'none';
+        }
+      });
     });
-  };
 
-  document.addEventListener('DOMContentLoaded', () => {
-    let checkbox = document.getElementById('recurring-task-checkbox');
-    let recurringTaskOptions = document.querySelector('.recurring-task-options-container');
-    let recurringTaskOptionsItems = recurringTaskOptions.querySelectorAll('.recurring-task-startby-and-endby-container-item.recurring-task-frequency-and-interval-container-item');
-
-    checkbox.addEventListener('change', () => {
-      if (checkbox.checked) {
-        recurringTaskOptions.style.display = 'flex';
-        recurringTaskOptions.style.flexDirection = 'row';
-        recurringTaskOptions.style.justifyContent = 'space-evenly';
-      }
-      else {
-        recurringTaskOptions.style.display = 'none';
-      }
+    document.querySelectorAll('.complete').forEach(e => {
+      const taskId = e.dataset.id;
+      e.addEventListener('click', () => {
+        fetch(`/complete/${taskId}`, {
+          method: 'PATCH',
+          redirect: 'follow'
+        })
+          .then(res => {
+            window.location.href = res.url;
+          })
+          .catch(err => console.error(err));
+      });
     });
-  });
 
-  document.querySelectorAll('.complete').forEach(e => {
-    const taskId = e.dataset.id;
-    e.addEventListener('click', () => {
-      fetch(`/complete/${taskId}`, {
-        method: 'PATCH',
-        redirect:'follow'
+    document.querySelectorAll('.pause').forEach(e => {
+      const taskId = e.dataset.id;
+      e.addEventListener('click', () => {
+        fetch(`/pause/${taskId}`, {
+          method: 'PATCH',
+          redirect: 'follow'
+        })
+          .then(res => {
+            window.location.href = res.url;
+          })
+          .catch(err => console.error(err));
       })
-      .then(res => {
-        window.location.href = res.url;
-      })
-      .catch(err => console.error(err));
-  });
-  });
+    });
 
-  document.querySelectorAll('.pause').forEach(e => {
-    const taskId = e.dataset.id;
-    e.addEventListener('click', () => {
-      fetch(`/pause/${taskId}`, {
-        method: 'PATCH',
-        redirect: 'follow'
+    document.querySelectorAll('.resume').forEach(e => {
+      const taskId = e.dataset.id;
+      e.addEventListener('click', () => {
+        fetch(`/resume/${taskId}`, {
+          method: 'PATCH',
+          redirect: 'follow'
+        })
+          .then(res => {
+            window.location.href = res.url;
+          })
+          .catch(err => console.error(err));
       })
-      .then(res => {
-        window.location.href = res.url;
-      })
-      .catch(err => console.error(err));
-    })
-  });
-
-  document.querySelectorAll('.resume').forEach(e => {
-    const taskId = e.dataset.id;
-    e.addEventListener('click', () => {
-      fetch(`/resume/${taskId}`, {
-        method: 'PATCH',
-        redirect: 'follow'
-      })
-      .then(res => {
-        window.location.href = res.url;
-      })
-      .catch(err => console.error(err));
-    })
-  });
-</script>
+    });
+  </script>
 
 </body>

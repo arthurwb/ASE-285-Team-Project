@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
+const calculateTaskVisibility = require('./taskVisiblity');
 dotenv.config();
 
 const TodoTask = require("./models/TodoTask");
@@ -22,8 +23,14 @@ app.use(express.urlencoded({ extended: true }));
 
 app.route("/").get(async (req, res) => {
   try {
-    const tasks = await TodoTask.find({})
-    res.render("todo.ejs", { todoTasks: tasks });
+    const tasks = await TodoTask.find({});
+
+    const tasksWithVisibility = tasks.map(task => ({
+      ...task.toObject(),
+      isVisible: calculateTaskVisibility(task),
+    }));
+
+    res.render("todo.ejs", { todoTasks: tasksWithVisibility });
   }
   catch (err) {
     console.error(err);
