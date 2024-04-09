@@ -53,10 +53,16 @@
     const frequency = details.recurrence.frequency;
     const interval = details.recurrence.interval || 1;
     const completionDates = details.completions;
+    const startDate = new Date(details.recurrence.startDate);
+    const endDate = new Date(details.recurrence.endDate);
     let currentDate = new Date();
     let nextDate;
     let isVisible = true;
     
+    if (details.isRecurring && currentDate < startDate && currentDate > endDate) {
+      isVisible = false;
+    }
+
 
     if (completionDates.length != 0) {
       isVisible = false;
