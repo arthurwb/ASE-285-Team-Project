@@ -102,6 +102,7 @@
 
   if (isVisible) { %>
   <li class="todo-list-item">
+  <div class="todo-list-item-content">
   <a data-id="<%= details._id %>" class="complete">
   <span class="fas fa-check"></span>
   </a>
@@ -113,6 +114,10 @@
   <a href="/remove/<%= details._id %>" class="remove">
   <span class="fas fa-times"></span>
   </a>
+  </div>
+  <% if (details.isRecurring) { %>
+  <div class="recurring-label">Recurring <%= details.recurrence.frequency.charAt(0).toUpperCase() + details.recurrence.frequency.slice(1) %></div>
+  <% } %>
   </li>
   <% } %>
   <% }) %>
