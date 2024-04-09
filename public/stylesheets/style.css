@@ -115,8 +115,23 @@ body {
     flex-grow: 2;
 }
 
+.todo-list-item .resume {
+    color: rgba(0, 255, 30, 0.673);
+    margin-right: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.todo-list-item .pause {
+    color: rgb(221, 255, 0);
+    margin-right: 5px;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+}
+
 .todo-list-item .complete {
-    color: rgb(23, 141, 0);
+    color: rgb(0, 42, 141);
     margin-right: 5px;
     cursor: pointer;
     text-decoration: none;
@@ -197,6 +212,14 @@ body {
     width: 100%;
     text-align: center;
     padding-top: 5px;
+}
+
+.pause-and-resume-buttons {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
 }
 
 .recurring-task-checkbox-container {

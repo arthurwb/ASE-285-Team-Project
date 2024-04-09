@@ -43,7 +43,8 @@ app.route("/").get(async (req, res) => {
         dayOfWeek: req.body.dayOfWeek,
         dayOfMonth: req.body.dayOfMonth,
         startBy: req.body.startBy,
-        endBy: req.body.endBy
+        endBy: req.body.endBy,
+        isPaused: false
       }
     };
 
@@ -111,6 +112,32 @@ app.route("/complete/:id")
       await TodoTask.deleteOne({_id: completedTask.id});
     }
 
+    res.redirect('/');
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+//PAUSE
+app.route("/pause/:id")
+.patch(async (req, res) => {
+  const id = req.params.id;
+  try {
+    await TodoTask.findOneAndUpdate({_id: id}, {$set: {'recurrence.isPaused': true}}, {new: true});
+    
+    res.redirect('/');
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+//RESUME
+app.route("/resume/:id")
+.patch(async (req, res) => {
+  const id = req.params.id;
+  try {
+    await TodoTask.findOneAndUpdate({_id: id}, {$set: {'recurrence.isPaused': false}}, {new: true});
+    
     res.redirect('/');
   } catch (err) {
     res.status(500).send(err);

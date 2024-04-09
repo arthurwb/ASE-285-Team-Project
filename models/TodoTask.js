@@ -21,6 +21,10 @@ const todoTaskSchema = new mongoose.Schema({
     default: false
   },
   recurrence: {
+    isPaused: {
+      type: Boolean,
+      default: false
+    },
     frequency: {
       type: String,
       enum: ['none', 'daily', 'weekly', 'monthly', 'yearly'],

@@ -36,7 +36,7 @@
       <div class="recurring-task-startby-and-endby-container">
         <div class="recurring-task-startby-and-endby-container-item">
           <label for="startBy">*Start Date</label>
-          <input type="date" id="startBy" name="startBy">
+          <input type="date" id="startBy" name="startBy" value="<%= new Date().toLocaleDateString('en-CA') %>">
         </div>
         <div class="recurring-task-startby-and-endby-container-item"></div>
           <label for="endBy">End Date</label>
@@ -117,7 +117,17 @@
   </div>
   <% if (details.isRecurring) { %>
   <div class="recurring-label">Recurring <%= details.recurrence.frequency.charAt(0).toUpperCase() + details.recurrence.frequency.slice(1) %></div>
+  <div class="pause-and-resume-buttons">
+  <% if (details.isRecurring) {
+    if (details.recurrence.isPaused) {
+      %> <a data-id="<%= details._id %>" class="resume"><i class="fas fa-solid fa-play"></i></a> <%
+    }
+    else {
+      %> <a data-id="<%= details._id %>" class="pause"><i class="fas fa-solid fa-pause"></i></a> <%
+    }
+  } %>
   <% } %>
+  </div>
   </li>
   <% } %>
   <% }) %>
@@ -156,6 +166,20 @@
       })
       .catch(err => console.error(err));
   });
+  });
+
+  document.querySelectorAll('.pause').forEach(e => {
+    const taskId = e.dataset.id;
+    e.addEventListener('click', () => {
+      fetch(`/pause/${taskId}`, {
+        method: 'PATCH',
+        redirect: 'follow'
+      })
+      .then(res => {
+        window.location.href = res.url;
+      })
+      .catch(err => console.error(err));
+    })
   });
 </script>
 
