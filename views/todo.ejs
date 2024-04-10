@@ -38,7 +38,7 @@
           <label for="startBy">*Start Date</label>
           <input type="date" id="startBy" name="startBy" value="<%= new Date().toLocaleDateString('en-CA') %>">
         </div>
-        <div class="recurring-task-startby-and-endby-container-item"></div>
+        <div class="recurring-task-startby-and-endby-container-item">
           <label for="endBy">End Date</label>
           <input type="date" id="endBy" name="endBy">
         </div>
@@ -101,42 +101,56 @@
     }
 
   if (isVisible) { %>
-  <li class="todo-list-item">
-  <div class="todo-list-item-content">
-  <a data-id="<%= details._id %>" class="complete">
-  <span class="fas fa-check"></span>
-  </a>
-  <div class="todo-list-item-name"><%= details.title %></div>
-  <div class="todo-list-item-date"><%= details.date.toISOString().split('T')[0] %></div>
-  <a href="/edit/<%= details._id %>" href="#" class="edit">
-  <span class="fas fa-edit"></span>
-  </a>
-  <a href="/remove/<%= details._id %>" class="remove">
-  <span class="fas fa-times"></span>
-  </a>
-  </div>
-  <% if (details.isRecurring) { %>
-  <div class="recurring-label">Recurring <%= details.recurrence.frequency.charAt(0).toUpperCase() + details.recurrence.frequency.slice(1) %></div>
-  <div class="pause-and-resume-buttons">
-  <% if (details.isRecurring) {
-    if (details.recurrence.isPaused) {
-      %> <a data-id="<%= details._id %>" class="resume"><i class="fas fa-solid fa-play"></i></a> <%
-    }
-    else {
-      %> <a data-id="<%= details._id %>" class="pause"><i class="fas fa-solid fa-pause"></i></a> <%
-    }
-  } %>
-  <% } %>
-  </div>
+  <li class="todo-list-item" data-paused="<%= details.recurrence.isPaused %>">
+    <div class="todo-list-item-content">
+      <a data-id="<%= details._id %>" class="complete">
+        <span class="fas fa-check"></span>
+      </a>
+      <div class="todo-list-item-name">
+        <%= details.title %>
+      </div>
+      <div class="todo-list-item-date">
+        <%= details.date.toISOString().split('T')[0] %>
+      </div>
+      <a href="/edit/<%= details._id %>" href="#" class="edit">
+        <span class="fas fa-edit"></span>
+      </a>
+      <a href="/remove/<%= details._id %>" class="remove">
+        <span class="fas fa-times"></span>
+      </a>
+    </div>
+    <% if (details.isRecurring) { %>
+      <div class="recurring-label">Recurring <%= details.recurrence.frequency.charAt(0).toUpperCase() +
+          details.recurrence.frequency.slice(1) %>
+      </div>
+      <div class="pause-and-resume-buttons">
+        <% if (details.isRecurring) { if (details.recurrence.isPaused) { %> <a data-id="<%= details._id %>"
+            class="resume"><i class="fas fa-solid fa-play"></i></a>
+          <% } else { %> <a data-id="<%= details._id %>" class="pause"><i class="fas fa-solid fa-pause"></i></a>
+            <% } } %>
+              <% } %>
+      </div>
   </li>
   <% } %>
-  <% }) %>
-</ul>
-
-</div>
+    <% }) %>
+      </ul>
+  </div>
 </div>
 
 <script>
+  window.onload = () => {
+    document.querySelectorAll('.todo-list-item').forEach((e) => {
+      if (e.dataset.paused == 'true') {
+        e.style.opacity = '0.5';
+        e.querySelectorAll('a').forEach((anchor) => {
+        anchor.addEventListener('click', (e) => {
+          e.preventDefault();
+        });
+      });
+      }
+    });
+  };
+
   document.addEventListener('DOMContentLoaded', () => {
     let checkbox = document.getElementById('recurring-task-checkbox');
     let recurringTaskOptions = document.querySelector('.recurring-task-options-container');
