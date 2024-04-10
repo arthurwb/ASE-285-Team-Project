@@ -92,6 +92,23 @@ body {
     font-family: "Candal", sans-serif;
     background-color: rgb(51, 212, 100);
 }
+.todo-list-item-tag-button {
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 5px;
+    font-family: "Candal", sans-serif;
+    background-color: rgb(51, 212, 100);
+}
+.todo-list-item-tag {
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 2px;
+    font-family: "Candal", sans-serif;
+}
 
 .todo-list-item .cancel {
     color: white;
