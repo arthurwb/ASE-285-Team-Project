@@ -196,3 +196,5 @@ app.get('/json', async (req, res) => {
     res.status(500).send('An error occurred while fetching tasks.' );
   }
 });
+
+module.exports = app;
