@@ -1,25 +1,43 @@
 const mongoose = require("mongoose");
 const express = require("express");
+const bodyParser = require("body-parser"); 
 const app = express();
 const dotenv = require("dotenv");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
 const calculateTaskVisibility = require('./taskVisiblity');
 dotenv.config();
 
 const TodoTask = require("./models/TodoTask");
+const Users = require("./models/UserData");
 
 main().catch(err => console.log(err));
+const server = app.listen(3000, () => console.log("Server Up and running"));
+
 
 async function main() {
   await mongoose.connect(process.env.URI);
   console.log("Connected to db!");
-  app.listen(3000, () => console.log("Server Up and running"));
 }
 
 app.set("view engine", "ejs");
+app.use(express.json());
 app.use("/static", express.static("public"));
 app.use(express.urlencoded({ extended: true }));
+// Configure body-parser middleware
+app.use(bodyParser.json()); // Parse JSON request body
+app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded request body
+app.use(cookieParser());
+
+app.use(session({
+  secret: "testEnv",
+  saveUninitialized: true,
+  resave: true
+}));
 
 // CRUD processing
+
+module.exports = app;
 
 app.route("/").get(async (req, res) => {
   try {
@@ -30,10 +48,13 @@ app.route("/").get(async (req, res) => {
       isVisible: calculateTaskVisibility(task),
     }));
 
-    res.render("todo.ejs", { todoTasks: tasksWithVisibility });
+    if (!req.session.user) {throw new ("not logged in")}
+    res.render("todo.ejs", { todoTasks: tasksWithVisibility, user: req.session.user });
+
   }
   catch (err) {
     console.error(err);
+    res.render("login.ejs");
   }
 }).post(async (req, res) => {
 
@@ -74,16 +95,52 @@ app.route("/login").get(async (req, res) => {
     console.log(err);
   }
 }).post(async (req, res) => {
-  console.log(req.body);
-  // render todo, with checks so it will send user back to login if the login fails
-  res.render("todo.ejs");
-})
+  try {
+    const { username, password } = req.body;
+    
+    const user = await Users.findOne({ username, password });
+    if (user) {
+      req.session.user = username;
+      req.session.save();
+      res.send({ success: true });
+    } else {
+      res.send({ success: false, message: "Incorrect username or password" });
+    }
+  } catch (error) {
+    console.error("Error in login:", error);
+    res.send({ success: false, message: "Server error" });
+  }
+});
 
-app.route("/create-account").post(async (req, res) => {
-  console.log(req.body);
-  // add user information into database, render login so they can login properly
-  res.render("login.ejs");
-})
+
+app.route("/create-account").get(async (req, res) => {
+  try {
+    res.render("login.ejs");
+  } catch (err) {
+    console.log(err);
+  }
+}).post(async (req, res) => {
+  try {
+    const existingUser = await Users.findOne({ username: req.body.username });
+    console.log("user create: " + req.body.username);
+    if (existingUser) {
+      console.log("User already exists with username: " + req.body.username);
+      res.send({ success: false, message: "Username already exists" });
+    } else {
+      const userData = new Users({
+        username: req.body.username,
+        password: req.body.password
+      });
+      await userData.save();
+      console.log("User created successfully: " + req.body.username);
+      res.send({ success: true, message: "User created successfully" });
+    }
+  } 
+  catch (error) {
+    console.error("Error in creating user:", error);
+    res.send({ success: false, message: "Server error" });
+  }
+});
 
 /* app.get("/", async (req, res) => {
   try {
@@ -173,11 +230,11 @@ app.route("/edit/:id")
     // Perform the update
     await TodoTask.findByIdAndUpdate(id, {
       title: title,
-      date: parsedDate
+      date: parsedDate,
+      tag: req.body.tag
     });
     res.redirect("/");
   } catch (err) {
-    // If there's an error, send the error message back to the client
     res.send(500, err.message);
   }
 });
@@ -193,6 +250,129 @@ app.route("/remove/:id").get(async (req, res) => {
   }
 });
 
+//TAG SEARCH
+// Render the page with the form
+app.get('/tag', function(req, resp) { 
+
+  try {
+    resp.status(500).render('todoTagSearch.ejs')
+  } catch (e) {
+    console.error(e);
+  } 
+});
+
+app.post("/tag", async (req, res) => {
+   console.log("tag function");
+   console.log(req.body)
+  try {
+    const tasks = await TodoTask.find({tag: req.body.tag}).sort({_id: 1})
+    console.log(tasks)
+    res.status(200).render("todo.ejs", { todoTasks: tasks });
+  }
+  catch (err) {
+    console.error(err); 
+  }
+});
+
+
+//SUBTASKS
+app.route("/subtask/:id").get(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let tasks = await TodoTask.find({_id: id});
+    res.render("todoSubtask.ejs", { todoTask: tasks });
+  } catch (err) {
+    console.error(err);
+  }
+})
+.post(async (req, res) => {
+  const id = req.params.id;
+  try {
+    const subtask = req.body;
+    // Perform the update
+    await TodoTask.findByIdAndUpdate(id, {
+      $push: {
+        subtasks: subtask,
+      },
+    });
+    res.redirect(`/subtask/${id}`);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+//SUBTASK EDIT
+app.route("/subtaskEdit/:id").get(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let task = await TodoTask.find({"subtasks._id": id});
+    res.render("subtaskEdit.ejs", { todoTask: task, idSubtask: id });
+  } catch (err) {
+    res.send(500, err.message)
+  }
+})
+.post(async (req, res) => {
+  const id = req.params.id;
+  try {
+    const { subtaskTitle, subtaskDate } = req.body;
+    //getting task for id
+    let task = await TodoTask.find({"subtasks._id": id});
+    // Perform the update
+    await TodoTask.findByIdAndUpdate(task[0]._id, {
+      subtasks: task[0].subtasks.map(subtask => {
+        if (subtask._id == id) {
+          subtask.subtaskTitle = subtaskTitle;
+          subtask.subtaskDate = subtaskDate;
+        }
+        return subtask;
+      })
+    });
+    res.redirect(`/subtask/${task[0]._id}`);
+  } catch (err) {
+    res.send(500, err.message);
+  }
+});
+
+//SUBTASK DELETE
+app.route("/subtaskRemove/:id").get(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let task = await TodoTask.find({"subtasks._id": id});
+    // Perform the update
+    await TodoTask.findByIdAndUpdate(task[0]._id, {
+      $pull: {
+        subtasks: {
+          _id: id
+        }
+      }
+    });
+    res.redirect(`/subtask/${task[0]._id}`);
+  } catch (err) {
+    res.send(500, err.message);
+  }
+});
+
+//SUBTASK COMPLETE
+app.route("/subtaskComplete/:id").get(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let task = await TodoTask.find({"subtasks._id": id});
+    // Perform the update
+    await TodoTask.findByIdAndUpdate(task[0]._id, {
+      subtasks: task[0].subtasks.map(subtask => {
+        if (subtask._id == id) {
+          subtask.subtaskCompleted = !subtask.subtaskCompleted;
+        }
+        return subtask;
+      })
+    });
+    res.redirect("/");
+  } catch (err) {
+    res.send(500, err.message);
+  }
+});
+
+
 //GETJSON
 app.get('/json', async (req, res) => {
   try {
@@ -204,4 +384,5 @@ app.get('/json', async (req, res) => {
   }
 });
 
-module.exports = app;
+
+module.exports = { app, server, main };

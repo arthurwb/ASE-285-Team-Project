@@ -6,9 +6,12 @@
 </head>
 
 <body>
-  <div class="todo-container">
-    <h2>To-Do List</h2>
-    <div class="todo">
+<div class="todo-container">
+<h2>To-Do List</h2>
+<button  class="todo-list-item-tag-button" onclick="window.location.href='/tag'">Search On Tag</button>
+<button  class="todo-list-item-tag-button" onclick="window.location.href='/'">Remove Search</button>
+<h3>Username: <%- user %>
+<div class="todo">
 
       <form action="/" method="POST" class="todo-header">
         <input type="text" name="title">
@@ -48,41 +51,61 @@
         </div>
       </form>
 
-      <ul class="todo-list">
-        <% todoTasks.forEach(details=> {
-          if (details.isVisible) { %>
-          <li class="todo-list-item" data-paused="<%= details.recurrence.isPaused %>">
-            <div class="todo-list-item-content">
-              <a data-id="<%= details._id %>" class="complete">
-                <span class="fas fa-check"></span>
-              </a>
-              <div class="todo-list-item-name">
-                <%= details.title %>
-              </div>
-              <div class="todo-list-item-date">
-                <%= details.date.toISOString().split('T')[0] %>
-              </div>
-              <a href="/edit/<%= details._id %>" href="#" class="edit">
-                <span class="fas fa-edit"></span>
-              </a>
-              <a href="/remove/<%= details._id %>" class="remove">
-                <span class="fas fa-times"></span>
-              </a>
-            </div>
-            <% if (details.isRecurring) { %>
-              <div class="recurring-label">Recurring <%= details.recurrence.frequency.charAt(0).toUpperCase() +
-                  details.recurrence.frequency.slice(1) %>
-              </div>
-              <div class="pause-and-resume-buttons">
-                <% if (details.isRecurring) { if (details.recurrence.isPaused) { %> <a data-id="<%= details._id %>"
-                    class="resume"><i class="fas fa-solid fa-play"></i></a>
-                  <% } else { %> <a data-id="<%= details._id %>" class="pause"><i class="fas fa-solid fa-pause"></i></a>
-                    <% } } %>
-                      <% } %>
-              </div>
-          </li>
-          <% } %>
-            <% }) %>
+<ul class="todo-list">
+  <% todoTasks.forEach(details => {
+  if (isVisible) { %>
+  <li class="todo-list-item" data-paused="<%= details.recurrence.isPaused %>">
+    <div class="todo-list-item-content">
+      <a data-id="<%= details._id %>" class="complete">
+        <span class="fas fa-check"></span>
+      </a>
+      <div class="todo-list-item-name">
+        <%= details.title %>
+      </div>
+      <div class="todo-list-item-date">
+        <%= details.date.toISOString().split('T')[0] %>
+      </div>
+      <div class="todo-list-item-tag"><%= details.tag %></div>
+      <div class="dropdown">
+        <a href="/subtask/<%= details._id %>"><button>Subtasks</button></a>
+        <table class="dropdown-content">
+          <% if(details.subtasks.length > 0) {
+            details.subtasks.forEach(subtask => { %>
+          <tr><td><%= subtask.subtaskTitle %></td><td><a href="/subtaskComplete/<%= subtask._id %>" class="fas fa-check check-mark <% if(subtask.subtaskCompleted) {%>active<%} %>"></a></td></tr>
+          <% })} else { %>
+          <td>No Subtasks Added</td>
+        </table>
+      </div>
+      <a href="/edit/<%= details._id %>" href="#" class="edit">
+        <span class="fas fa-edit"></span>
+      </a>
+      <a href="/remove/<%= details._id %>" class="remove">
+        <span class="fas fa-times"></span>
+      </a>
+      <% const completedSubtasks = detail.subtasks.filter( subtask => subtask.subtaskCompleted).length;
+         const totalSubtasks = details.subtasks.length;
+         const percent = ((completedSubtasks / totalSubtasks) * 100).toFixed(2);
+         if (!isNan(percent)) { %>
+        <div class="todo-list-item-progress">
+          <span>Task Progress:</span>
+          <progress value="<%= completedSubtasks %>" max="<% totalSubtasks"></progress>
+          <span style="margin-left: 10px"><%= percent %>%</span>
+        </div>
+    </div>
+    <% if (details.isRecurring) { %>
+      <div class="recurring-label">Recurring <%= details.recurrence.frequency.charAt(0).toUpperCase() +
+          details.recurrence.frequency.slice(1) %>
+      </div>
+      <div class="pause-and-resume-buttons">
+        <% if (details.isRecurring) { if (details.recurrence.isPaused) { %> <a data-id="<%= details._id %>"
+            class="resume"><i class="fas fa-solid fa-play"></i></a>
+          <% } else { %> <a data-id="<%= details._id %>" class="pause"><i class="fas fa-solid fa-pause"></i></a>
+            <% } } %>
+              <% } %>
+      </div>
+  </li>
+  <% } %>
+    <% }) %>
       </ul>
     </div>
   </div>

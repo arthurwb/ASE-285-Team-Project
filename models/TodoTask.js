@@ -48,7 +48,28 @@ const todoTaskSchema = new mongoose.Schema({
       type: Date
     }
   },
-  completions: [completionSchema]
+  completions: [completionSchema],
+
+  subtasks: [
+    {
+      subtaskTitle: {
+        type: String,
+        required: true
+      },
+      subtaskDate: {
+        type: Date,
+        default: Date.now
+      },
+      subtaskCompleted: {
+        type: Boolean,
+        default: false
+      }
+    }
+  ],
+  tag: {
+    type: String,
+    default: "Misc"
+  }
 })
 
 module.exports = mongoose.model('TodoTask',todoTaskSchema);
