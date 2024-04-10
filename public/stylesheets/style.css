@@ -53,6 +53,7 @@ body {
 
 .todo-container ul {
     list-style: none;
+
 }
 
 .todo-list-item {
@@ -84,6 +85,7 @@ body {
     margin-right: 20px;
     border: none;
     border-radius: 5px;
+
     font-family: "Candal", sans-serif;
     max-width: 100px;
     /* Set a max-width as per your preference */
@@ -97,6 +99,23 @@ body {
     padding: 5px;
     font-family: "Candal", sans-serif;
     background-color: rgb(51, 212, 100);
+}
+.todo-list-item-tag-button {
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 5px;
+    font-family: "Candal", sans-serif;
+    background-color: rgb(51, 212, 100);
+}
+.todo-list-item-tag {
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 2px;
+    font-family: "Candal", sans-serif;
 }
 
 .todo-list-item .cancel {
@@ -149,7 +168,59 @@ body {
     margin-right: 5px;
     cursor: pointer;
     text-decoration: none;
-}
+    }
+    .dropdown {
+        display: inline-block;
+    }
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: rgb(212, 212, 212);
+        min-width: 160px;
+        box-shadow: 0px 8px 15px 0px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+    }
+    .dropdown-content td {
+        padding: 5px 10px 5px 10px;
+    }
+    .check-mark {
+        text-decoration: none;
+        color: rgb(212, 212, 212);
+    }
+    .check-mark:hover {
+        color: green;
+    }
+    .check-mark.active {
+        color: green;
+    }
+    .check-mark.active:hover {
+        color: red;
+    }
+    .dropdown:hover .dropdown-content {
+        display: inline-block;
+    }
+    .back-btn {
+        margin-top: 40px;
+        border-radius: 60px;
+        font-family: 'Candal', sans-serif;
+        color: #ffffff;
+        font-size: 15px;
+        background: #33d464;
+        padding: 10px 20px 10px 20px;
+        text-decoration: none;
+    }
+    .todo-list-item-progress {
+        border: none;
+        border-radius: 0 0 5px 5px;
+        font-family: 'Candal', sans-serif;
+        background: rgba(0, 0, 0, 0.3);
+        display: flex;
+        align-items: center;
+    }
+    .todo-list-item-progress span {
+        padding-right: 5px;
+    }
 
 .login-container {
     color: white;
@@ -255,3 +326,4 @@ body {
     display: flex;
     flex-direction: column;
 }
+

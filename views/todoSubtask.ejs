@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<head>
+    <title>Todo App</title>
+    <%- include('common_head.ejs') %>
+</head>
+
+<body>
+    <div class="todo-container">
+    <h2>Add Subtasks</h2>
+    <h2>Task: <%= todoTask[0].title %></h2>
+    <div class="todo">
+    
+    <form action="/subtask/<%= todoTask[0]._id %>" method="POST" class="todo-header">
+        <input type="text" name="subtaskTitle">
+        <button type="submit"><span class="fas fa-plus"></span></button>
+    </form>
+
+    <ul class="todo-list">
+        <% todoTask[0].subtasks.forEach(details => { %>
+        <li class="todo-list-item">
+        <div class="todo-list-item-name"><%= details.subtaskTitle %></div>
+        <div class="todo-list-item-date"><%= details.subtaskDate.toISOString().split('T')[0] %></div>
+        <a href="/subtaskEdit/<%= details._id %>" class="edit">
+        <span class="fas fa-edit"></span>
+        </a>
+        <a href="/subtaskRemove/<%= details._id %>" class="remove">
+        <span class="fas fa-times"></span>
+        </a>
+        </li>
+        <% }) %>
+    </ul>
+    
+    </div>
+    <a href="/"><button class="back-btn">Back</button></a>
+    </div>
+</body>

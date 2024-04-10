@@ -19,6 +19,12 @@
                     <form action="/edit/<%= details._id %>" method="POST">
                         <input type="text" value="<%= details.title %>" name="title" required>
                         <input type="text" value="<%= new Date(details.date).toISOString().split('T')[0] %>" name="date" required>
+                        <select name="tag" id="tag">
+                            <option value="Misc">Misc</option>
+                            <option value="Home">Home</option>
+                            <option value="Work">Work</option>
+                            <option value="Study">Study</option>
+                          </select>
                         <button type="submit">Confirm</button>
                         <a href="/" class="cancel">Cancel</a>
                     </form>
@@ -27,6 +33,7 @@
                 <li class="todo-list-item">
                     <div class="todo-list-item-name"><%= details.title %></div>
                     <div class="todo-list-item-date"><%= details.date.toISOString().split('T')[0] %></div>
+                    <div class="todo-list-item-tag"><%= details.tag %></div>
                     <a href="/edit/<%= details._id %>" class="edit"> <span class="fas fa-edit"></span> </a>
                     <a href="/remove/<%= details._id %>" class="remove"> <span class="fas fa-times"></span> </a>
                 </li>
