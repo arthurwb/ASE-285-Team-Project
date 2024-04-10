@@ -260,7 +260,7 @@ app.post("/tag", async (req, res) => {
   try {
     const tasks = await TodoTask.find({tag: req.body.tag}).sort({_id: 1})
     console.log(tasks)
-    res.status(200).render("todo.ejs", { todoTasks: tasks });
+    res.status(200).render("todo.ejs", { todoTasks: tasks, user: req.session.user });
   }
   catch (err) {
     console.error(err); 
