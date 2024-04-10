@@ -64,7 +64,15 @@ body {
     font-family: "Candal", sans-serif;
     background: rgba(0, 0, 0, 0.3);
     display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.todo-list-item-content {
+    display: flex;
     flex-direction: row;
+    width: 100%;
+    justify-content: space-evenly;
 }
 
 .todo-list-item form {
@@ -124,6 +132,28 @@ body {
 
 .todo-list-item div {
     flex-grow: 2;
+}
+
+.todo-list-item .resume {
+    color: rgba(0, 255, 30, 0.673);
+    margin-right: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.todo-list-item .pause {
+    color: rgb(221, 255, 0);
+    margin-right: 5px;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+}
+
+.todo-list-item .complete {
+    color: rgb(0, 42, 141);
+    margin-right: 5px;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 .todo-list-item .edit {
@@ -248,3 +278,52 @@ body {
 .create-account-toggle:hover {
     background-color: rgb(25, 136, 164);
 }
+
+.recurring-label {
+    width: 100%;
+    text-align: center;
+    padding-top: 5px;
+}
+
+.pause-and-resume-buttons {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.recurring-task-checkbox-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.recurring-task-options-container {
+    display: none;
+}
+
+.recurring-task-frequency-and-interval-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.recurring-task-frequency-and-interval-container-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.recurring-task-frequency-and-interval-container-item > select {
+    width: 80px;
+    box-sizing: border-box;
+}
+
+.recurring-task-frequency-and-interval-container-item > input {
+    width: 80px;
+    box-sizing: border-box;
+}
+
+.recurring-task-startby-and-endby-container {
+    display: flex;
+    flex-direction: column;
+}
+

@@ -50,9 +50,25 @@ app.route("/").get(async (req, res) => {
     res.render("login.ejs");
   }
 }).post(async (req, res) => {
+
   const todoTask = new TodoTask({
-      title: req.body.title
+      title: req.body.title,
+      isRecurring: req.body.isRecurring
   });
+
+    // Creates recurrence object only if user is creating a recurring task.
+    if (todoTask.isRecurring) {
+      todoTask.recurrence = {
+        frequency: req.body.frequency,
+        interval: req.body.interval,
+        dayOfWeek: req.body.dayOfWeek,
+        dayOfMonth: req.body.dayOfMonth,
+        startBy: req.body.startBy,
+        endBy: req.body.endBy,
+        isPaused: false
+      }
+    };
+
   try {
     await todoTask.save();
     res.redirect("/");
@@ -141,6 +157,50 @@ app.post('/', async (req, res) => {
     }
 });
 */
+
+//COMPLETE
+app.route("/complete/:id")
+.patch(async (req, res) => {
+  const id = req.params.id;
+  const completionDate = new Date();
+  try {
+    let completedTask = await TodoTask.findOneAndUpdate({_id: id}, {$push: {completions: {date: completionDate}}}, {new: true});
+    if (!completedTask.isRecurring) {
+      await TodoTask.deleteOne({_id: completedTask.id});
+    }
+
+    res.redirect('/');
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+//PAUSE
+app.route("/pause/:id")
+.patch(async (req, res) => {
+  const id = req.params.id;
+  try {
+    await TodoTask.findOneAndUpdate({_id: id}, {$set: {'recurrence.isPaused': true}}, {new: true});
+    
+    res.redirect('/');
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+//RESUME
+app.route("/resume/:id")
+.patch(async (req, res) => {
+  const id = req.params.id;
+  try {
+    await TodoTask.findOneAndUpdate({_id: id}, {$set: {'recurrence.isPaused': false}}, {new: true});
+    
+    res.redirect('/');
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
 //UPDATE
 app.route("/edit/:id")
 .get(async (req, res) => {
@@ -176,7 +236,7 @@ app.route("/edit/:id")
 app.route("/remove/:id").get(async (req, res) => {
   const id = req.params.id;
   try {
-    await TodoTask.findByIdAndRemove(id)
+    await TodoTask.findByIdAndDelete(id);
     res.redirect("/");
   } catch (err) {
     res.send(500, err);
@@ -317,5 +377,5 @@ app.get('/json', async (req, res) => {
   }
 });
 
-module.exports = { app, server, main };
 
+module.exports = { app, server, main };
