@@ -11,14 +11,16 @@ const TodoTask = require("./models/TodoTask");
 const Users = require("./models/UserData");
 
 main().catch(err => console.log(err));
+const server = app.listen(3000, () => console.log("Server Up and running"));
+
 
 async function main() {
   await mongoose.connect(process.env.URI);
   console.log("Connected to db!");
-  app.listen(3000, () => console.log("Server Up and running"));
 }
 
 app.set("view engine", "ejs");
+app.use(express.json());
 app.use("/static", express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 // Configure body-parser middleware
@@ -41,6 +43,7 @@ app.route("/").get(async (req, res) => {
     const tasks = await TodoTask.find({})
     if (!req.session.user) {throw new ("not logged in")}
     res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
+
   }
   catch (err) {
     console.error(err);
@@ -165,7 +168,6 @@ app.route("/edit/:id")
     });
     res.redirect("/");
   } catch (err) {
-    // If there's an error, send the error message back to the client
     res.send(500, err.message);
   }
 });
@@ -213,7 +215,7 @@ app.route("/subtask/:id").get(async (req, res) => {
     let tasks = await TodoTask.find({_id: id});
     res.render("todoSubtask.ejs", { todoTask: tasks });
   } catch (err) {
-    res.send(500, err);
+    console.error(err);
   }
 })
 .post(async (req, res) => {
@@ -228,8 +230,7 @@ app.route("/subtask/:id").get(async (req, res) => {
     });
     res.redirect(`/subtask/${id}`);
   } catch (err) {
-    // If there's an error, send the error message back to the client
-    res.send(500, err.message);
+    res.status(500).send(err);
   }
 });
 
@@ -261,7 +262,6 @@ app.route("/subtaskEdit/:id").get(async (req, res) => {
     });
     res.redirect(`/subtask/${task[0]._id}`);
   } catch (err) {
-    // If there's an error, send the error message back to the client
     res.send(500, err.message);
   }
 });
@@ -281,7 +281,6 @@ app.route("/subtaskRemove/:id").get(async (req, res) => {
     });
     res.redirect(`/subtask/${task[0]._id}`);
   } catch (err) {
-    // If there's an error, send the error message back to the client
     res.send(500, err.message);
   }
 });
@@ -302,7 +301,6 @@ app.route("/subtaskComplete/:id").get(async (req, res) => {
     });
     res.redirect("/");
   } catch (err) {
-    // If there's an error, send the error message back to the client
     res.send(500, err.message);
   }
 });
@@ -319,4 +317,5 @@ app.get('/json', async (req, res) => {
   }
 });
 
-module.exports = app;
+module.exports = { app, server, main };
+
