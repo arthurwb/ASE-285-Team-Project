@@ -10,7 +10,7 @@
 <h2>To-Do List</h2>
 <button  class="todo-list-item-tag-button" onclick="window.location.href='/tag'">Search On Tag</button>
 <button  class="todo-list-item-tag-button" onclick="window.location.href='/'">Remove Search</button>
-<h3>Username: <%- user %>
+<h3>Username: <%- user %></h3>
 <div class="todo">
 
       <form action="/" method="POST" class="todo-header">
@@ -85,7 +85,7 @@
       <% const completedSubtasks = details.subtasks.filter( subtask => subtask.subtaskCompleted).length;
          const totalSubtasks = details.subtasks.length;
          const percent = ((completedSubtasks / totalSubtasks) * 100).toFixed(2);
-         if (!isNan(percent)) { %>
+         if (!isNaN(percent)) { %>
         <div class="todo-list-item-progress">
           <span>Task Progress:</span>
           <progress value="<%= completedSubtasks %>" max="<%= totalSubtasks %>"></progress>
@@ -105,7 +105,7 @@
       </div>
   </li>
   <% } %>
-    <% }) %>
+    <% } %>
       </ul>
     </div>
   </div>
