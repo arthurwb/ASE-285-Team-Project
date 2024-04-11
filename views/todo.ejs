@@ -52,7 +52,7 @@
 
 <ul class="todo-list">
   <% todoTasks.forEach(details => { %>
-<<<<<< main
+
   <%
     const frequency = details.recurrence.frequency;
     const interval = details.recurrence.interval || 1;
@@ -69,13 +69,13 @@
     let nextDate;
     let isVisible = true;
     
-    console.log(currentDate);
     if (details.isRecurring && (currentDate < startDate || (currentDate >= endDate && endDate != null))) {
       console.log('its set');
       console.log(endDate);
       isVisible = false;
     }
-======
+    %>
+
   <li class="todo-list-item">
   <div class="todo-list-item-name"><%= details.title %></div>
   <div class="todo-list-item-date"><%= details.date.toISOString().split('T')[0] %></div>
@@ -110,11 +110,11 @@
   <% } %>
   <% }) %>
 </ul>
->>>>>> main
 
-
-
-
+<%
+  todoTasks.forEach(details => {
+    const completionDates = details.completions;
+    var isVisible = true;
     if (completionDates.length != 0) {
       isVisible = false;
       let latestCompletionDate = completionDates.reduce((a, b) => new Date(a.date) > new Date(b.date) ? a : b).date;
@@ -182,8 +182,7 @@
               <% } %>
       </div>
   </li>
-  <% } %>
-    <% }) %>
+  <% }   });%>
       </ul>
   </div>
 </div>
