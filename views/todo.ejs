@@ -52,7 +52,6 @@
 
 <ul class="todo-list">
   <% todoTasks.forEach(details => { %>
-<<<<<< main
   <%
     const frequency = details.recurrence.frequency;
     const interval = details.recurrence.interval || 1;
@@ -75,46 +74,6 @@
       console.log(endDate);
       isVisible = false;
     }
-======
-  <li class="todo-list-item">
-  <div class="todo-list-item-name"><%= details.title %></div>
-  <div class="todo-list-item-date"><%= details.date.toISOString().split('T')[0] %></div>
-  <div class="todo-list-item-tag"><%= details.tag %></div>
-  <div class="dropdown">
-    <a href="/subtask/<%= details._id %>"><button>SubTasks</button></a>
-    <table class="dropdown-content">
-      <% if(details.subtasks.length > 0){
-        details.subtasks.forEach(subtask => { %>
-      <tr><td><%= subtask.subtaskTitle %></td><td><a href="/subtaskComplete/<%= subtask._id %>" class="fas fa-check check-mark <% if(subtask.subtaskCompleted) {%>active<%} %>"></a></td></tr>
-      <% })} else { %>
-      <td>No Subtasks Added</td>
-      <% } %>
-    </table>
-  </div>
-  <a href="/edit/<%= details._id %>" class="edit">
-  <span class="fas fa-edit"></span>
-  </a>
-  <a href="/remove/<%= details._id %>" class="remove">
-  <span class="fas fa-times"></span>
-  </a>
-</li>
-  <% const completedSubtasks = details.subtasks.filter(subtask => subtask.subtaskCompleted).length;
-     const totalSubtasks = details.subtasks.length;
-     const percent = ((completedSubtasks / totalSubtasks) * 100).toFixed(2);
-     if (!isNaN(percent)) { %>
-    <div class="todo-list-item-progress">
-      <span>Task Progress:</span>
-      <progress value="<%= completedSubtasks %>" max="<%= totalSubtasks %>"></progress>
-      <span style="margin-left: 10px"><%= percent %>%</span>
-    </div>
-  <% } %>
-  <% }) %>
-</ul>
->>>>>> main
-
-
-
-
     if (completionDates.length != 0) {
       isVisible = false;
       let latestCompletionDate = completionDates.reduce((a, b) => new Date(a.date) > new Date(b.date) ? a : b).date;
