@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser"); 
 const app = express();
 const dotenv = require("dotenv");
+const calculateTaskVisibility = require('./taskVisiblity');
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 dotenv.config();
@@ -40,9 +41,15 @@ module.exports = app;
 
 app.route("/").get(async (req, res) => {
   try {
-    const tasks = await TodoTask.find({})
+    const tasks = await TodoTask.find({});
+
+    const tasksWithVisiblity = tasks.map(task => ({
+      ...task.toObject(),
+      isVisible: calculateTaskVisibility(task)
+    }));
+
     if (!req.session.user) {throw new ("not logged in")}
-    res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
+    res.render("todo.ejs", { todoTasks: tasksWithVisiblity, user: req.session.user });
 
   }
   catch (err) {

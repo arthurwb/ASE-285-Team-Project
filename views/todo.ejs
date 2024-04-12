@@ -52,8 +52,7 @@
 
 <ul class="todo-list">
   <% todoTasks.forEach(details => { 
-    %>
-
+    if (details.isVisible) { %>
 <li class="todo-list-item">
   <div class="todo-list-item-content">
   <a data-id="<%= details._id %>" class="complete">
@@ -80,7 +79,9 @@
     <span class="fas fa-times"></span>
   </a>
   </div>
+  
 </li>
+<% } %>
   <% const completedSubtasks = details.subtasks.filter(subtask => subtask.subtaskCompleted).length;
      const totalSubtasks = details.subtasks.length;
      const percent = ((completedSubtasks / totalSubtasks) * 100).toFixed(2);
