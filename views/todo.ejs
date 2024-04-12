@@ -53,7 +53,7 @@
 <ul class="todo-list">
   <% todoTasks.forEach(details => {
     if (details.isVisible) { %>
-<li class="todo-list-item">
+<li class="todo-list-item" data-paused="<%= details.recurrence.isPaused %>">
   <div class="todo-list-item-content">
   <a data-id="<%= details._id %>" class="complete">
     <span class="fas fa-check"></span>
@@ -110,6 +110,7 @@
 <script>
   window.onload = () => {
     document.querySelectorAll('.todo-list-item').forEach((e) => {
+      console.log(e.dataset.paused);
       if (e.dataset.paused == 'true') {
         e.style.opacity = '0.5';
         e.querySelectorAll('a').forEach((anchor) => {
