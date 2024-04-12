@@ -55,6 +55,9 @@
     %>
 
 <li class="todo-list-item">
+  <a data-id="<%= details._id %>" class="complete">
+    <span class="fas fa-check"></span>
+  </a>
   <div class="todo-list-item-name"><%= details.title %></div>
   <div class="todo-list-item-date"><%= details.date.toISOString().split('T')[0] %></div>
   <div class="todo-list-item-tag"><%= details.tag %></div>
@@ -74,9 +77,6 @@
   </a>
   <a href="/remove/<%= details._id %>" class="remove">
     <span class="fas fa-times"></span>
-  </a>
-  <a data-id="<%= details._id %>" class="complete">
-    <span class="fas fa-check"></span>
   </a>
 </li>
   <% const completedSubtasks = details.subtasks.filter(subtask => subtask.subtaskCompleted).length;
