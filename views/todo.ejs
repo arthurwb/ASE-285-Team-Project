@@ -51,7 +51,7 @@
 </form>
 
 <ul class="todo-list">
-  <% todoTasks.forEach(details => { 
+  <% todoTasks.forEach(details => {
     if (details.isVisible) { %>
 <li class="todo-list-item">
   <div class="todo-list-item-content">
@@ -88,9 +88,8 @@
           class="resume"><i class="fas fa-solid fa-play"></i></a>
       <% } else { %> <a data-id="<%= details._id %>" class="pause"><i class="fas fa-solid fa-pause"></i></a>
         <% } } %>
+      </div>
       <% } %>
-    </div>
-</li>
 <% } %>
   <% const completedSubtasks = details.subtasks.filter(subtask => subtask.subtaskCompleted).length;
      const totalSubtasks = details.subtasks.length;
@@ -101,8 +100,9 @@
       <progress value="<%= completedSubtasks %>" max="<%= totalSubtasks %>"></progress>
       <span style="margin-left: 10px"><%= percent %>%</span>
     </div>
-  <% }
-    }   );%>
+  <% } %>
+    </li>
+    <% }   );%>
       </ul>
   </div>
 </div>

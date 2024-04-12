@@ -80,7 +80,7 @@ body {
     display: flex;
     flex-direction: row;
     min-width: 100%;
-    gap: 10px;
+    gap: 5px;
     max-width: 110%;
 }
 
@@ -289,7 +289,6 @@ body {
 }
 
 .recurring-label {
-    width: 100%;
     text-align: center;
     padding-top: 5px;
 }
