@@ -7,9 +7,11 @@
 <body>
 <div class="todo-container">
 <h2>To-Do List</h2>
+<div class="tag-search-buttons">
 <button  class="todo-list-item-tag-button" onclick="window.location.href='/tag'">Search On Tag</button>
 <button  class="todo-list-item-tag-button" onclick="window.location.href='/'">Remove Search</button>
-<h3>Username: <%- user %>
+</div>
+<h3>Username: <%- user %></h3>
 <div class="todo">
 
 <form action="/" method="POST" class="todo-header">
@@ -51,32 +53,13 @@
 </form>
 
 <ul class="todo-list">
-  <% todoTasks.forEach(details => { %>
-<<<<<< main
-  <%
-    const frequency = details.recurrence.frequency;
-    const interval = details.recurrence.interval || 1;
-    const completionDates = details.completions;
-    const startDate = new Date(details.recurrence.startBy);
-    let endDate;
-    if (details.recurrence.endBy != null) {
-      endDate = new Date(details.recurrence.endBy);
-    }
-    else {
-      endDate = null;
-    }
-    let currentDate = new Date();
-    let nextDate;
-    let isVisible = true;
-    
-    console.log(currentDate);
-    if (details.isRecurring && (currentDate < startDate || (currentDate >= endDate && endDate != null))) {
-      console.log('its set');
-      console.log(endDate);
-      isVisible = false;
-    }
-======
-  <li class="todo-list-item">
+  <% todoTasks.forEach(details => {
+    if (details.isVisible) { %>
+<li class="todo-list-item" data-paused="<%= details.recurrence.isPaused %>">
+  <div class="todo-list-item-content">
+  <a data-id="<%= details._id %>" class="complete">
+    <span class="fas fa-check"></span>
+  </a>
   <div class="todo-list-item-name"><%= details.title %></div>
   <div class="todo-list-item-date"><%= details.date.toISOString().split('T')[0] %></div>
   <div class="todo-list-item-tag"><%= details.tag %></div>
@@ -92,12 +75,24 @@
     </table>
   </div>
   <a href="/edit/<%= details._id %>" class="edit">
-  <span class="fas fa-edit"></span>
+    <span class="fas fa-edit"></span>
   </a>
   <a href="/remove/<%= details._id %>" class="remove">
-  <span class="fas fa-times"></span>
+    <span class="fas fa-times"></span>
   </a>
-</li>
+  </div>
+  <% if (details.isRecurring) { %>
+    <div class="recurring-label">Recurring <%= details.recurrence.frequency.charAt(0).toUpperCase() +
+      details.recurrence.frequency.slice(1) %>
+    </div>
+    <div class="pause-and-resume-buttons">
+      <% if (details.isRecurring) { if (details.recurrence.isPaused) { %> <a data-id="<%= details._id %>"
+          class="resume"><i class="fas fa-solid fa-play"></i></a>
+      <% } else { %> <a data-id="<%= details._id %>" class="pause"><i class="fas fa-solid fa-pause"></i></a>
+        <% } } %>
+      </div>
+      <% } %>
+<% } %>
   <% const completedSubtasks = details.subtasks.filter(subtask => subtask.subtaskCompleted).length;
      const totalSubtasks = details.subtasks.length;
      const percent = ((completedSubtasks / totalSubtasks) * 100).toFixed(2);
@@ -108,82 +103,8 @@
       <span style="margin-left: 10px"><%= percent %>%</span>
     </div>
   <% } %>
-  <% }) %>
-</ul>
->>>>>> main
-
-
-
-
-    if (completionDates.length != 0) {
-      isVisible = false;
-      let latestCompletionDate = completionDates.reduce((a, b) => new Date(a.date) > new Date(b.date) ? a : b).date;
-      if (frequency === 'daily') {
-        nextDate = new Date(latestCompletionDate);
-        nextDate.setDate(nextDate.getDate() + interval);
-        if (currentDate >= nextDate) {
-          isVisible = true;
-        }
-      }
-      else if (frequency === 'weekly') {
-        nextDate = new Date(latestCompletionDate);
-        nextDate.setDate(nextDate.getDate() + 7 * interval);
-
-        if (currentDate >= nextDate) {
-          isVisible = true;
-        }
-      }
-      else if (frequency === 'monthly') {
-        nextDate = new Date(latestCompletionDate);
-        nextDate.setMonth(nextDate.getMonth() + interval);
-
-        if (currentDate >= nextDate) {
-          isVisible = true;
-        }
-      }
-      else if (frequency === 'yearly') {
-        nextDate = new Date(latestCompletionDate);
-        nextDate.setFullYear(nextDate.getFullYear() + interval);
-
-        if (currentDate >= nextDate) {
-          isVisible = true;
-        }
-      }
-    }
-
-  if (isVisible) { %>
-  <li class="todo-list-item" data-paused="<%= details.recurrence.isPaused %>">
-    <div class="todo-list-item-content">
-      <a data-id="<%= details._id %>" class="complete">
-        <span class="fas fa-check"></span>
-      </a>
-      <div class="todo-list-item-name">
-        <%= details.title %>
-      </div>
-      <div class="todo-list-item-date">
-        <%= details.date.toISOString().split('T')[0] %>
-      </div>
-      <a href="/edit/<%= details._id %>" href="#" class="edit">
-        <span class="fas fa-edit"></span>
-      </a>
-      <a href="/remove/<%= details._id %>" class="remove">
-        <span class="fas fa-times"></span>
-      </a>
-    </div>
-    <% if (details.isRecurring) { %>
-      <div class="recurring-label">Recurring <%= details.recurrence.frequency.charAt(0).toUpperCase() +
-          details.recurrence.frequency.slice(1) %>
-      </div>
-      <div class="pause-and-resume-buttons">
-        <% if (details.isRecurring) { if (details.recurrence.isPaused) { %> <a data-id="<%= details._id %>"
-            class="resume"><i class="fas fa-solid fa-play"></i></a>
-          <% } else { %> <a data-id="<%= details._id %>" class="pause"><i class="fas fa-solid fa-pause"></i></a>
-            <% } } %>
-              <% } %>
-      </div>
-  </li>
-  <% } %>
-    <% }) %>
+    </li>
+    <% }   );%>
       </ul>
   </div>
 </div>
@@ -191,6 +112,7 @@
 <script>
   window.onload = () => {
     document.querySelectorAll('.todo-list-item').forEach((e) => {
+      console.log(e.dataset.paused);
       if (e.dataset.paused == 'true') {
         e.style.opacity = '0.5';
         e.querySelectorAll('a').forEach((anchor) => {
