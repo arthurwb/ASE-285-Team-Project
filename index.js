@@ -265,6 +265,15 @@ app.route("/remove/:id").get(async (req, res) => {
   }
 });
 
+//DATE SEARCH
+app.get("/date", function(req, res) {
+  try {
+    res.render("todoDateSearch.ejs");
+  } catch (err) {
+    res.send(500, err);
+  }
+});
+
 //TAG SEARCH
 // Render the page with the form
 app.get("/tag", function (req, resp) {
