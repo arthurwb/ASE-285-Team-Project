@@ -6,7 +6,6 @@ const dotenv = require("dotenv");
 const calculateTaskVisibility = require('./taskVisiblity');
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
-const calculateTaskVisibility = require("./taskVisiblity");
 dotenv.config();
 
 const TodoTask = require("./models/TodoTask");
