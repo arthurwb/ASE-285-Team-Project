@@ -33,6 +33,17 @@ body {
     font-size: 2em;
 }
 
+.date-search-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.date-search-container button {
+    width: 25px;
+    margin-top: 5px;
+    align-self: center;
+}
+
 .todo-header input {
     width: 92%;
     border: none;
