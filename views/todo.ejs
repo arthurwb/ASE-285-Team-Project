@@ -8,8 +8,10 @@
 <body>
 <div class="todo-container">
 <h2>To-Do List</h2>
+<div class="tag-search-buttons">
 <button  class="todo-list-item-tag-button" onclick="window.location.href='/tag'">Search On Tag</button>
 <button  class="todo-list-item-tag-button" onclick="window.location.href='/'">Remove Search</button>
+</div>
 <h3>Username: <%- user %></h3>
 <div class="todo">
 
@@ -53,93 +55,92 @@
 
 <ul class="todo-list">
   <% todoTasks.forEach(details => {
-  if (isVisible) { %>
-  <li class="todo-list-item" data-paused="<%= details.recurrence.isPaused %>">
-    <div class="todo-list-item-content">
-      <a data-id="<%= details._id %>" class="complete">
-        <span class="fas fa-check"></span>
-      </a>
-      <div class="todo-list-item-name">
-        <%= details.title %>
-      </div>
-      <div class="todo-list-item-date">
-        <%= details.date.toISOString().split('T')[0] %>
-      </div>
-      <div class="todo-list-item-tag"><%= details.tag %></div>
-      <div class="dropdown">
-        <a href="/subtask/<%= details._id %>"><button>Subtasks</button></a>
-        <table class="dropdown-content">
-          <% if(details.subtasks.length > 0) {
-            details.subtasks.forEach(subtask => { %>
-          <tr><td><%= subtask.subtaskTitle %></td><td><a href="/subtaskComplete/<%= subtask._id %>" class="fas fa-check check-mark <% if(subtask.subtaskCompleted) {%>active<%} %>"></a></td></tr>
-          <% })} else { %>
-          <td>No Subtasks Added</td>
-        </table>
-      </div>
-      <a href="/edit/<%= details._id %>" href="#" class="edit">
-        <span class="fas fa-edit"></span>
-      </a>
-      <a href="/remove/<%= details._id %>" class="remove">
-        <span class="fas fa-times"></span>
-      </a>
-      <% const completedSubtasks = details.subtasks.filter( subtask => subtask.subtaskCompleted).length;
-         const totalSubtasks = details.subtasks.length;
-         const percent = ((completedSubtasks / totalSubtasks) * 100).toFixed(2);
-         if (!isNaN(percent)) { %>
-        <div class="todo-list-item-progress">
-          <span>Task Progress:</span>
-          <progress value="<%= completedSubtasks %>" max="<%= totalSubtasks %>"></progress>
-          <span style="margin-left: 10px"><%= percent %>%</span>
-        </div>
+    if (details.isVisible) { %>
+<li class="todo-list-item" data-paused="<%= details.recurrence.isPaused %>">
+  <div class="todo-list-item-content">
+  <a data-id="<%= details._id %>" class="complete">
+    <span class="fas fa-check"></span>
+  </a>
+  <div class="todo-list-item-name"><%= details.title %></div>
+  <div class="todo-list-item-date"><%= details.date.toISOString().split('T')[0] %></div>
+  <div class="todo-list-item-tag"><%= details.tag %></div>
+  <div class="dropdown">
+    <a href="/subtask/<%= details._id %>"><button>SubTasks</button></a>
+    <table class="dropdown-content">
+      <% if(details.subtasks.length > 0){
+        details.subtasks.forEach(subtask => { %>
+      <tr><td><%= subtask.subtaskTitle %></td><td><a href="/subtaskComplete/<%= subtask._id %>" class="fas fa-check check-mark <% if(subtask.subtaskCompleted) {%>active<%} %>"></a></td></tr>
+      <% })} else { %>
+      <td>No Subtasks Added</td>
+      <% } %>
+    </table>
+  </div>
+  <a href="/edit/<%= details._id %>" class="edit">
+    <span class="fas fa-edit"></span>
+  </a>
+  <a href="/remove/<%= details._id %>" class="remove">
+    <span class="fas fa-times"></span>
+  </a>
+  </div>
+  <% if (details.isRecurring) { %>
+    <div class="recurring-label">Recurring <%= details.recurrence.frequency.charAt(0).toUpperCase() +
+      details.recurrence.frequency.slice(1) %>
     </div>
-    <% if (details.isRecurring) { %>
-      <div class="recurring-label">Recurring <%= details.recurrence.frequency.charAt(0).toUpperCase() +
-          details.recurrence.frequency.slice(1) %>
+    <div class="pause-and-resume-buttons">
+      <% if (details.isRecurring) { if (details.recurrence.isPaused) { %> <a data-id="<%= details._id %>"
+          class="resume"><i class="fas fa-solid fa-play"></i></a>
+      <% } else { %> <a data-id="<%= details._id %>" class="pause"><i class="fas fa-solid fa-pause"></i></a>
+        <% } } %>
       </div>
-      <div class="pause-and-resume-buttons">
-        <% if (details.isRecurring) { if (details.recurrence.isPaused) { %> <a data-id="<%= details._id %>"
-            class="resume"><i class="fas fa-solid fa-play"></i></a>
-          <% } else { %> <a data-id="<%= details._id %>" class="pause"><i class="fas fa-solid fa-pause"></i></a>
-            <% } } %>
-              <% } %>
-      </div>
-  </li>
+      <% } %>
+<% } %>
+  <% const completedSubtasks = details.subtasks.filter(subtask => subtask.subtaskCompleted).length;
+     const totalSubtasks = details.subtasks.length;
+     const percent = ((completedSubtasks / totalSubtasks) * 100).toFixed(2);
+     if (!isNaN(percent)) { %>
+    <div class="todo-list-item-progress">
+      <span>Task Progress:</span>
+      <progress value="<%= completedSubtasks %>" max="<%= totalSubtasks %>"></progress>
+      <span style="margin-left: 10px"><%= percent %>%</span>
+    </div>
   <% } %>
-    <% } %>
+    </li>
+    <% }   );%>
       </ul>
     </div>
   </div>
 
-  <script>
-    window.onload = () => {
-      document.querySelectorAll('.todo-list-item').forEach((e) => {
-        if (e.dataset.paused == 'true') {
-          e.style.opacity = '0.5';
-          e.querySelectorAll('a').forEach((anchor) => {
-            anchor.addEventListener('click', (e) => {
-              e.preventDefault();
-            });
-          });
-        }
+<script>
+  window.onload = () => {
+    document.querySelectorAll('.todo-list-item').forEach((e) => {
+      console.log(e.dataset.paused);
+      if (e.dataset.paused == 'true') {
+        e.style.opacity = '0.5';
+        e.querySelectorAll('a').forEach((anchor) => {
+        anchor.addEventListener('click', (e) => {
+          e.preventDefault();
+        });
       });
-    };
-
-    document.addEventListener('DOMContentLoaded', () => {
-      let checkbox = document.getElementById('recurring-task-checkbox');
-      let recurringTaskOptions = document.querySelector('.recurring-task-options-container');
-      let recurringTaskOptionsItems = recurringTaskOptions.querySelectorAll('.recurring-task-startby-and-endby-container-item.recurring-task-frequency-and-interval-container-item');
-
-      checkbox.addEventListener('change', () => {
-        if (checkbox.checked) {
-          recurringTaskOptions.style.display = 'flex';
-          recurringTaskOptions.style.flexDirection = 'row';
-          recurringTaskOptions.style.justifyContent = 'space-evenly';
-        }
-        else {
-          recurringTaskOptions.style.display = 'none';
-        }
-      });
+      }
     });
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    let checkbox = document.getElementById('recurring-task-checkbox');
+    let recurringTaskOptions = document.querySelector('.recurring-task-options-container');
+    let recurringTaskOptionsItems = recurringTaskOptions.querySelectorAll('.recurring-task-startby-and-endby-container-item.recurring-task-frequency-and-interval-container-item');
+
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        recurringTaskOptions.style.display = 'flex';
+        recurringTaskOptions.style.flexDirection = 'row';
+        recurringTaskOptions.style.justifyContent = 'space-evenly';
+      }
+      else {
+        recurringTaskOptions.style.display = 'none';
+      }
+    });
+  });
 
     document.querySelectorAll('.complete').forEach(e => {
       const taskId = e.dataset.id;

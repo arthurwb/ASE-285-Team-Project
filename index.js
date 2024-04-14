@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const dotenv = require("dotenv");
+const calculateTaskVisibility = require('./taskVisiblity');
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const calculateTaskVisibility = require("./taskVisiblity");
@@ -40,31 +41,26 @@ app.use(
 
 module.exports = app;
 
-app
-  .route("/")
-  .get(async (req, res) => {
-    try {
-      const tasks = await TodoTask.find({});
+app.route("/").get(async (req, res) => {
+  try {
+    const tasks = await TodoTask.find({});
 
-      const tasksWithVisibility = tasks.map((task) => ({
-        ...task.toObject(),
-        isVisible: calculateTaskVisibility(task),
-      }));
+    const tasksWithVisiblity = tasks.map(task => ({
+      ...task.toObject(),
+      isVisible: calculateTaskVisibility(task)
+    }));
 
-      if (!req.session.user) {
-        throw new "not logged in"();
-      }
-      res.render("todo.ejs", {
-        todoTasks: tasksWithVisibility,
-        user: req.session.user,
-      });
-    } catch (err) {
-      console.error(err);
-      res.render("login.ejs");
-    }
-  })
-  .post(async (req, res) => {
-    const todoTask = new TodoTask({
+    if (!req.session.user) {throw new ("not logged in")}
+    res.render("todo.ejs", { todoTasks: tasksWithVisiblity, user: req.session.user });
+
+  }
+  catch (err) {
+    console.error(err);
+    res.render("login.ejs");
+  }
+}).post(async (req, res) => {
+
+  const todoTask = new TodoTask({
       title: req.body.title,
       isRecurring: req.body.isRecurring,
     });
@@ -284,11 +280,12 @@ app.post("/tag", async (req, res) => {
   console.log("tag function");
   console.log(req.body);
   try {
-    const tasks = await TodoTask.find({ tag: req.body.tag }).sort({ _id: 1 });
-    console.log(tasks);
-    res.status(200).render("todo.ejs", { todoTasks: tasks });
-  } catch (err) {
-    console.error(err);
+    const tasks = await TodoTask.find({tag: req.body.tag}).sort({_id: 1})
+    console.log(tasks)
+    res.status(200).render("todo.ejs", { todoTasks: tasks, user: req.session.user });
+  }
+  catch (err) {
+    console.error(err); 
   }
 });
 

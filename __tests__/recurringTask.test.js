@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../index');
+const {app, server, main} = require('../index');
 const TodoTask = require('../models/TodoTask');
 
 describe('Recurring Task Interval Display', () => {

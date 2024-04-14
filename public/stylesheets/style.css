@@ -56,6 +56,12 @@ body {
 
 }
 
+.todo-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .todo-list-item {
     padding: 10px;
     margin-top: 10px;
@@ -64,15 +70,18 @@ body {
     font-family: "Candal", sans-serif;
     background: rgba(0, 0, 0, 0.3);
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .todo-list-item-content {
     display: flex;
     flex-direction: row;
-    width: 100%;
-    justify-content: space-evenly;
+    min-width: 100%;
+    gap: 5px;
+    max-width: 110%;
 }
 
 .todo-list-item form {
@@ -280,7 +289,6 @@ body {
 }
 
 .recurring-label {
-    width: 100%;
     text-align: center;
     padding-top: 5px;
 }
