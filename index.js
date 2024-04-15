@@ -114,6 +114,15 @@ app.route("/login").get(async (req, res) => {
   }
 });
 
+app.route("/login/logout").get(async (req, res) => {
+  try {
+    req.session.user = "";
+    res.render("login.ejs");
+  } catch (error) {
+    res.send({ success: false, message: "Server Error: " + error });
+  }
+});
+
 
 app.route("/create-account").get(async (req, res) => {
   try {
