@@ -221,9 +221,7 @@ body {
     }
     .todo-list-item-progress {
         border: none;
-        border-radius: 0 0 5px 5px;
         font-family: 'Candal', sans-serif;
-        background: rgba(0, 0, 0, 0.3);
         display: flex;
         align-items: center;
     }
