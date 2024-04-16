@@ -98,8 +98,8 @@ app.route("/login").get(async (req, res) => {
   try {
     const { username, password } = req.body;
     
-    const user = await Users.findOne({ username, password });
-    if (user) {
+    const user = await Users.findOne({ username });
+    if (user.validatePassword(password)) {
       req.session.user = username;
       req.session.save();
       res.send({ success: true });
@@ -111,7 +111,6 @@ app.route("/login").get(async (req, res) => {
     res.send({ success: false, message: "Server error" });
   }
 });
-
 
 app.route("/create-account").get(async (req, res) => {
   try {
@@ -127,10 +126,9 @@ app.route("/create-account").get(async (req, res) => {
       console.log("User already exists with username: " + req.body.username);
       res.send({ success: false, message: "Username already exists" });
     } else {
-      const userData = new Users({
-        username: req.body.username,
-        password: req.body.password
-      });
+      let userData = new Users();
+      userData.username = req.body.username;
+      userData.setPassword(req.body.password);
       await userData.save();
       console.log("User created successfully: " + req.body.username);
       res.send({ success: true, message: "User created successfully" });
