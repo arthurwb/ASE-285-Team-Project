@@ -101,7 +101,7 @@ app.route("/login").get(async (req, res) => {
     const { username, password } = req.body;
     
     const user = await Users.findOne({ username });
-    if (user.validatePassword(password)) {
+    if (user != null && user.validatePassword(password)) {
       req.session.user = username;
       req.session.save();
       res.send({ success: true });
