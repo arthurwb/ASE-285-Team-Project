@@ -285,8 +285,6 @@ app.route("/date")
 })
 .post(async (req, res) => {
   try {
-    console.log(req.body.date);
-
     let startDate = new Date(req.body.date);
     
     if (req.body.endDate === '') {
@@ -297,11 +295,23 @@ app.route("/date")
         isVisible: true
       }));
 
-      console.log(req.session.user);
       res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
     }
     else {
-      let tasks = await TodoTask.find({date: startDate});
+      let endDate = new Date(req.body.endDate);
+      let tasks = await TodoTask.find({
+        date: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate)
+        }
+      });
+
+      tasks = tasks.map(task => ({
+        ...task.toObject(),
+        isVisible: true
+      }));
+
+      res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
     }
 
   } catch (err) {
