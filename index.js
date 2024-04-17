@@ -4,13 +4,13 @@ const bodyParser = require("body-parser");
 const app = express();
 const dotenv = require("dotenv");
 const calculateTaskVisibility = require('./taskVisiblity');
+const userSessions = require ('./userSessions');
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 dotenv.config();
 
 const TodoTask = require("./models/TodoTask");
 const Users = require("./models/UserData");
-
 main().catch(err => console.log(err));
 const server = app.listen(3000, () => console.log("Server Up and running"));
 
@@ -43,12 +43,13 @@ app.route("/").get(async (req, res) => {
   try {
     const tasks = await TodoTask.find({});
 
-    const tasksWithVisiblity = tasks.map(task => ({
+    let tasksWithVisiblity = tasks.map(task => ({
       ...task.toObject(),
       isVisible: calculateTaskVisibility(task)
     }));
 
-    if (!req.session.user) {throw new ("not logged in")}
+    if (!req.session.user) {throw new Error("not logged in")}
+    tasksWithVisiblity = userSessions.filterUserTasks(tasksWithVisiblity, req.session);
     res.render("todo.ejs", { todoTasks: tasksWithVisiblity, user: req.session.user });
 
   }
@@ -60,7 +61,8 @@ app.route("/").get(async (req, res) => {
 
   const todoTask = new TodoTask({
       title: req.body.title,
-      isRecurring: req.body.isRecurring
+      isRecurring: req.body.isRecurring,
+      user: req.session.user
   });
 
     // Creates recurrence object only if user is creating a recurring task.
@@ -111,6 +113,16 @@ app.route("/login").get(async (req, res) => {
     res.send({ success: false, message: "Server error" });
   }
 });
+
+app.route("/login/logout").get(async (req, res) => {
+  try {
+    req.session.user = "";
+    res.render("login.ejs");
+  } catch (error) {
+    res.send({ success: false, message: "Server Error: " + error });
+  }
+});
+
 
 app.route("/create-account").get(async (req, res) => {
   try {
