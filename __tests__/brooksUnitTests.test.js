@@ -1,6 +1,6 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const app = require("../index");
+const { app } = require("../index");
 
 describe("User Creation", () => {
   // Connect to MongoDB memory server before running any tests
@@ -123,5 +123,91 @@ describe("Login", () => {
       .expect(200)
 
     expect(response.body.success).toBe(false);
-  })
+  });
+});
+
+describe("Session Variables", () => {
+  beforeAll(async () => {
+    // URI used only for testing purposes
+    await mongoose.connect(
+      "mongodb+srv://admin:admin@qb3cluster.sknm95g.mongodb.net/mongoTodoapp?retryWrites=true&w=majority",
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      }
+    );
+  });
+
+  afterAll(async () => {
+    await mongoose.connection.dropDatabase();
+    await mongoose.disconnect();
+    console.log("database disconnected");
+  });
+
+  it("should start", async () => {
+    const response = await request(app).get("/");
+
+    expect(response.body).toBeDefined();
+  });
+
+  it("should respond with user generated content based on the session variable", async () => {
+
+  });
+
+  it("should be able to create posts with hashed user information attached", async () => {
+    const userData = {
+      username: "test",
+      password: "test", // Ensure password field is included
+    };
+
+    // Create an account to log in to
+    await request(app)
+      .post("/create-account")
+      .send(`username=${userData.username}&password=${userData.password}`)
+      .expect(200);
+
+    await request(app)
+      .post("/login")
+      .send(`username=${userData.username}&password=${userData.password}`)
+      .expect(200);
+/*
+{
+  title: 'qwe',
+  frequency: 'daily',
+  interval: '1',
+  startBy: '2024-04-17',
+  endBy: ''
+}
+[
+  {
+    recurrence: {
+      isPaused: false,
+      frequency: 'none',
+      interval: 1,
+      startBy: 2024-04-17T15:51:24.050Z
+    },
+    _id: new ObjectId("661feffc14926034e773800a"),
+    title: 'qwe',
+    user: 'qwe',
+    isRecurring: false,
+    tag: 'Misc',
+    date: 2024-04-17T15:51:24.050Z,
+    completions: [],
+    subtasks: [],
+    __v: 0,
+    isVisible: true
+  }
+]
+*/
+    let send = 
+    await request(app)
+      .post("/")
+      .send(JSON.parse(send))
+      .expect(200);
+
+    let response = await request(app)
+      .get("/");
+    
+    expect(response.text).toContain('testPost');
+  });
 });
