@@ -2,7 +2,7 @@ const userSessions = {
     "filterUserTasks": function filterUserTasks(tasks, session) {
         const userTasks = []
         tasks.forEach(task => {
-            if (task.username == session.username) {
+            if (task.user == session.user) {
                 userTasks.push(task);
             }
         });

@@ -1,6 +1,6 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const { app } = require("../index");
+const { app, server, main } = require('../index');
 
 describe("User Creation", () => {
   // Connect to MongoDB memory server before running any tests
@@ -126,7 +126,8 @@ describe("Login", () => {
   });
 });
 
-describe("Session Variables", () => {
+describe('Session Variables', () => {
+  // Connect to MongoDB memory server before running any tests
   beforeAll(async () => {
     // URI used only for testing purposes
     await mongoose.connect(
@@ -138,76 +139,65 @@ describe("Session Variables", () => {
     );
   });
 
+  // Close MongoDB connection after all tests
   afterAll(async () => {
     await mongoose.connection.dropDatabase();
     await mongoose.disconnect();
     console.log("database disconnected");
   });
 
-  it("should start", async () => {
-    const response = await request(app).get("/");
-
-    expect(response.body).toBeDefined();
-  });
-
-  it("should respond with user generated content based on the session variable", async () => {
-
-  });
-
-  it("should be able to create posts with hashed user information attached", async () => {
-    const userData = {
-      username: "test",
-      password: "test", // Ensure password field is included
-    };
-
-    // Create an account to log in to
+  it('should be able to log in and create / view posts', async () => {
+    let cookies;
     await request(app)
       .post("/create-account")
-      .send(`username=${userData.username}&password=${userData.password}`)
+      .send(`username=test&password=test`)
+      .expect(200);
+    await request(app)
+      .post('/login')
+      .send({ username: 'test', password: 'test' })
+      .expect(200)
+      .then(res => {
+        cookies = res.headers['set-cookie'];
+      });
+    await request(app)
+      .post('/')
+      .set('Cookie', cookies)
+      .send({ title: 'Test Post', isRecurring: false })
+      .expect(302);
+
+    const response = await request(app)
+      .get('/')
+      .set('Cookie', cookies)
       .expect(200);
 
+    expect(response.text).toContain('Test Post');
+  });
+
+  it('should not display posts from other users', async () => {
+    let cookies;
     await request(app)
-      .post("/login")
-      .send(`username=${userData.username}&password=${userData.password}`)
+      .post("/create-account")
+      .send(`username=test2&password=test2`)
       .expect(200);
-/*
-{
-  title: 'qwe',
-  frequency: 'daily',
-  interval: '1',
-  startBy: '2024-04-17',
-  endBy: ''
-}
-[
-  {
-    recurrence: {
-      isPaused: false,
-      frequency: 'none',
-      interval: 1,
-      startBy: 2024-04-17T15:51:24.050Z
-    },
-    _id: new ObjectId("661feffc14926034e773800a"),
-    title: 'qwe',
-    user: 'qwe',
-    isRecurring: false,
-    tag: 'Misc',
-    date: 2024-04-17T15:51:24.050Z,
-    completions: [],
-    subtasks: [],
-    __v: 0,
-    isVisible: true
-  }
-]
-*/
-    let send = 
     await request(app)
-      .post("/")
-      .send(JSON.parse(send))
+      .post('/login')
+      .send({ username: 'test2', password: 'test2' })
+      .expect(200)
+      .then(res => {
+        cookies = res.headers['set-cookie'];
+      });
+    await request(app)
+      .post('/')
+      .set('Cookie', cookies)
+      .send({ title: 'Another Post', isRecurring: false })
+      .expect(302);
+
+    const response = await request(app)
+      .get('/')
+      .set('Cookie', cookies)
       .expect(200);
 
-    let response = await request(app)
-      .get("/");
-    
-    expect(response.text).toContain('testPost');
+    expect(response.text).toContain('Another Post');
+    expect(response.text).not.toContain('Test Post');
   });
 });
