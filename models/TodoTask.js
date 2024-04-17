@@ -16,6 +16,10 @@ const todoTaskSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  user: {
+    type: String,
+    required: true
+  },
   isRecurring: {
     type: Boolean,
     default: false
