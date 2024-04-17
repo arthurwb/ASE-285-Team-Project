@@ -111,7 +111,10 @@
     </div>
   </div>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/static/js/getLocalMidnightDate.js"></script>
 <script>
+
   window.onload = () => {
     document.querySelectorAll('.todo-list-item').forEach((e) => {
       console.log(e.dataset.paused);
@@ -184,6 +187,7 @@
           .catch(err => console.error(err));
       })
     });
+
   </script>
 
 </body>

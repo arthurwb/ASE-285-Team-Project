@@ -7,12 +7,12 @@ const calculateTaskVisibility = require('./taskVisiblity');
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 dotenv.config();
+app.use("/static", express.static("public"));
 
 const TodoTask = require("./models/TodoTask");
 const Users = require("./models/UserData");
 
 main().catch((err) => console.log(err));
-const server = app.listen(3000, () => console.log("Server Up and running"));
 
 async function main() {
   await mongoose.connect(process.env.URI);
@@ -27,6 +27,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // Parse JSON request body
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded request body
 app.use(cookieParser());
+
+let currentDate;
+
+app.post('/get-date', (req, res) => {
+  currentDate = req.body.date;
+});
+
+const server = app.listen(3000, () => console.log("Server Up and running"));
 
 app.use(
   session({
@@ -44,13 +52,13 @@ app.route("/").get(async (req, res) => {
   try {
     const tasks = await TodoTask.find({});
 
-    const tasksWithVisiblity = tasks.map(task => ({
+    const tasksWithVisibility = tasks.map(task => ({
       ...task.toObject(),
       isVisible: calculateTaskVisibility(task)
     }));
 
     if (!req.session.user) {throw new ("not logged in")}
-    res.render("todo.ejs", { todoTasks: tasksWithVisiblity, user: req.session.user });
+    res.render("todo.ejs", { todoTasks: tasksWithVisibility, user: req.session.user });
 
   }
   catch (err) {
@@ -62,6 +70,7 @@ app.route("/").get(async (req, res) => {
   const todoTask = new TodoTask({
       title: req.body.title,
       isRecurring: req.body.isRecurring,
+      date: currentDate
     });
 
     // Creates recurrence object only if user is creating a recurring task.
@@ -266,9 +275,35 @@ app.route("/remove/:id").get(async (req, res) => {
 });
 
 //DATE SEARCH
-app.get("/date", function(req, res) {
+app.route("/date")
+.get((req, res) => {
   try {
     res.render("todoDateSearch.ejs");
+  } catch (err) {
+    res.send(500, err);
+  }
+})
+.post(async (req, res) => {
+  try {
+    console.log(req.body.date);
+
+    let startDate = new Date(req.body.date);
+    
+    if (req.body.endDate === '') {
+      let tasks = await TodoTask.find({date: startDate});
+
+      tasks = tasks.map(task => ({
+        ...task.toObject(),
+        isVisible: true
+      }));
+
+      console.log(req.session.user);
+      res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
+    }
+    else {
+      let tasks = await TodoTask.find({date: startDate});
+    }
+
   } catch (err) {
     res.send(500, err);
   }
@@ -288,8 +323,13 @@ app.post("/tag", async (req, res) => {
   console.log("tag function");
   console.log(req.body);
   try {
-    const tasks = await TodoTask.find({tag: req.body.tag}).sort({_id: 1})
-    console.log(tasks)
+    let tasks = await TodoTask.find({tag: req.body.tag}).sort({_id: 1});
+    
+    tasks = tasks.map(task => ({
+      ...task.toObject(),
+      isVisible: true
+    }));
+
     res.status(200).render("todo.ejs", { todoTasks: tasks, user: req.session.user });
   }
   catch (err) {
