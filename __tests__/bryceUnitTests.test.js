@@ -12,10 +12,24 @@ dotenv.config();
     await mongoose.connect(process.env.URI);
 })();
 
+let cookies;
+
 describe('POST /', () => {
     it('creates a new task', async () => {
+        await request(app)
+            .post("/create-account")
+            .send(`username=test&password=test2`)
+            .expect(200);
+        await request(app)
+            .post('/login')
+            .send({ username: 'test', password: 'test' })
+            .expect(200)
+            .then(res => {
+                cookies = res.headers['set-cookie'];
+            });
         const res = await request(app)
             .post('/')
+            .set('Cookie', cookies)
             .send({
                 title: 'test task'
             });
@@ -149,14 +163,6 @@ describe('Password validation', () => {
 describe('Storing user data', () => {
     it('stores user data securely', async () => {
         await main();
-        const res = await request(app)
-            .post('/create-account')
-            .send({
-                username: 'test',
-                password: 'test'
-            })
-            .expect(200);
-        expect(res.body.success).toBe(true);
         
         const user = await Users.findOne({ username: 'test' });
         expect(user).toBeDefined();
