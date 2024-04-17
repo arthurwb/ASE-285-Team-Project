@@ -17,7 +17,6 @@
     "ejs-lint": "^2.0.0",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
-    "jest": "^29.7.0",
     "mongodb": "^5.0.1",
     "mongoose": "^7.6.10",
     "nodemon": "^3.1.0"
