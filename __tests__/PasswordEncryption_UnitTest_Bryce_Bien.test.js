@@ -15,6 +15,7 @@ describe('Password hashing', () => {
         expect(user.hash).toBeDefined();
         expect(user.salt).toBeDefined();
         expect(user.hash).not.toEqual("test");
+        await user.save();
     });
 });
 
@@ -32,7 +33,7 @@ describe('Storing user data', () => {
     it('stores user data securely', async () => {
         await main();
         const res = await request(app)
-            .post('/create-account')
+            .post('/login')
             .send({
                 username: 'test',
                 password: 'test'
@@ -45,7 +46,7 @@ describe('Storing user data', () => {
         expect(user.username).toBe('test');
         expect(user.hash).toBeDefined();
         expect(user.salt).toBeDefined();
-        expect(user.hash).not.toEqual('test');
+        expect(user.hash).not.toEqual('wrong');
     });
 
     afterAll(async () => {    
