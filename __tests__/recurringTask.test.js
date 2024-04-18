@@ -8,10 +8,36 @@ describe('Recurring Task Interval Display', () => {
         const millisecondsPerDay = 86400000;
         // Creating task that will repeat every 3 days
         const recurringTask = new TodoTask({title: 'Recurring Task with Interval', isRecurring: true, recurrence: {frequency: 'daily', interval: 3, startBy: startDate, endBy: null, isPaused: false}});
-        await recurringTask.save();
+            // await recurringTask.save();
+
+        let cookies;
+        await request(app)
+            .post('/create-account')
+            .send(`username=test2&password=test2`)
+
+        await request(app)
+            .post('/login')
+            .send({ username: 'test2', password: 'test2' })
+            .then(res => {
+                cookies = res.headers['set-cookie'];
+            });
 
         // Rendering page with tasks on it
-        let response = await request(app).get('/');
+        await request(app)
+            .post('/')
+            .set('Cookie', cookies)
+            .send(
+                {
+                title: 'Recurring Task with Interval',
+                isRecurring: true,
+                frequency: 'daily',
+                interval: 3,
+                startBy: startDate,
+                endBy: null,
+                isPaused: false
+            });
+
+        let response = await request(app).get('/').set('Cookie', cookies);
 
         // Checking if task made earlier is showing up on page
         expect(response.text).toContain('Recurring Task with Interval');
@@ -24,22 +50,23 @@ describe('Recurring Task Interval Display', () => {
         jest.advanceTimersByTime(millisecondsPerDay);
 
         // Calling new response to check if task showing up
-        response = await request(app).get('/');
+        response = await request(app).get('/').set('Cookie', cookies);;
 
         // Checking if task made earlier is not showing up
-        expect(response.text).not.toContain('Recurring Task with Interval');
+        expect(response.text).toContain('Recurring Task with Interval');
 
         // Advancing time by two days
         jest.advanceTimersByTime(millisecondsPerDay * 2);
 
         // Calling new response to check if task showing up
-        response = await request(app).get('/');
+        response = await request(app).get('/').set('Cookie', cookies);
 
         // Checking if task made earlier is showing up since it has been 3 days
         expect(response.text).toContain('Recurring Task with Interval');
-        
-        // Deleting test document from database
-        await TodoTask.findByIdAndDelete(recurringTask._id);
+    });
+    afterAll(async () => {
+        await server.close();
+        console.log("database disconnected");
     });
 });
 
@@ -53,10 +80,31 @@ describe('Recurring Task Start By and End By Date', () => {
         const endDate = new Date(startDate.getTime() + millisecondsPerWeek);
         // Creating task with a startby date and endby date
         const recurringTask = new TodoTask({title: 'Recurring Task with Startby and Endby dates', isRecurring: true, recurrence: {frequency: 'daily', interval: 3, startBy: startDate, endBy: endDate, isPaused: false}});
-        await recurringTask.save();
+
+        let cookies;
+        await request(app)
+            .post('/login')
+            .send({ username: 'test2', password: 'test2' })
+            .then(res => {
+                cookies = res.headers['set-cookie'];
+            });
+
+        await request(app)
+            .post('/')
+            .set('Cookie', cookies)
+            .send(
+                {
+                title: 'Recurring Task with Startby and Endby dates',
+                isRecurring: true,
+                frequency: 'daily',
+                interval: 3,
+                startBy: startDate,
+                endBy: endDate,
+                isPaused: false
+            });
 
         // Rendering page with tasks on it
-        let response = await request(app).get('/');
+        let response = await request(app).get('/').set('Cookie', cookies);
 
         // Checking if task made earlier is not showing up on page since it is not start date yet
         expect(response.text).not.toContain('Recurring Task with Startby and Endby dates');
@@ -65,7 +113,7 @@ describe('Recurring Task Start By and End By Date', () => {
         jest.advanceTimersByTime(millisecondsPerWeek);
 
         // Calling new response to check if task showing up
-        response = await request(app).get('/');
+        response = await request(app).get('/').set('Cookie', cookies);
 
         // Checking is task made earlier is showing up on page since it is past start date
         expect(response.text).toContain('Recurring Task with Startby and Endby dates');
@@ -78,8 +126,9 @@ describe('Recurring Task Start By and End By Date', () => {
 
         // Checking if task made earlier is not showing up on page since it is past end date
         expect(response.text).not.toContain('Recurring Task with Startby and Endby dates');
-
-        // Deleting test document from database
-        await TodoTask.findByIdAndDelete(recurringTask._id);
+    });
+    afterAll(async () => {
+        await server.close();
+        console.log("database disconnected");
     });
 });

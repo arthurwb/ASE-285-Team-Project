@@ -7,7 +7,7 @@ describe("User Creation", () => {
   beforeAll(async () => {
     // URI used only for testing purposes
     await mongoose.connect(
-      "mongodb+srv://admin:admin@qb3cluster.sknm95g.mongodb.net/mongoTodoapp?retryWrites=true&w=majority",
+      process.env.URI,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -17,10 +17,10 @@ describe("User Creation", () => {
 
   // Close MongoDB connection after all tests
   afterAll(async () => {
-    await mongoose.connection.dropDatabase();
+    await server.close();
     await mongoose.disconnect();
     console.log("database disconnected");
-  });
+  }, 10000);
 
   it("should start", async () => {
     const response = await request(app).get("/");
@@ -31,8 +31,8 @@ describe("User Creation", () => {
   it("should create a new user with correct input", async () => {
     console.warn("userCreation 1 start");
     const userData = {
-      username: "test",
-      password: "test", // Ensure password field is included
+      username: "test1",
+      password: "test1", // Ensure password field is included
     };
     console.log(userData);
 
@@ -48,8 +48,8 @@ describe("User Creation", () => {
   it("should return error if user already exists", async () => {
     console.warn("userCreation 2 start");
     const existingUser = {
-      username: "test",
-      password: "test", // Ensure password field is included
+      username: "test1",
+      password: "test1", // Ensure password field is included
     };
 
     const response = await request(app)
@@ -70,7 +70,7 @@ describe("Login", () => {
   beforeAll(async () => {
     // URI used only for testing purposes
     await mongoose.connect(
-      "mongodb+srv://admin:admin@qb3cluster.sknm95g.mongodb.net/mongoTodoapp?retryWrites=true&w=majority",
+      process.env.URI,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -80,10 +80,10 @@ describe("Login", () => {
 
   // Close MongoDB connection after all tests
   afterAll(async () => {
-    await mongoose.connection.dropDatabase();
+    await server.close();
     await mongoose.disconnect();
     console.log("database disconnected");
-  });
+  }, 10000);
 
   it("should start", async () => {
     const response = await request(app).get("/");
