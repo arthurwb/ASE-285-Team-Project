@@ -1,6 +1,6 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
-const app = require("../index");
+const { app, server, main } = require('../index');
 
 describe("User Creation", () => {
   // Connect to MongoDB memory server before running any tests
@@ -123,5 +123,5 @@ describe("Login", () => {
       .expect(200)
 
     expect(response.body.success).toBe(false);
-  })
+  });
 });

@@ -58,7 +58,6 @@ app.route("/").get(async (req, res) => {
     res.render("login.ejs");
   }
 }).post(async (req, res) => {
-
   const todoTask = new TodoTask({
       title: req.body.title,
       isRecurring: req.body.isRecurring,
