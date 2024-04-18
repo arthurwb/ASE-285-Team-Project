@@ -7,7 +7,7 @@ describe('Session Variables', () => {
     beforeAll(async () => {
       // URI used only for testing purposes
       await mongoose.connect(
-        "mongodb+srv://admin:admin@qb3cluster.sknm95g.mongodb.net/mongoTodoapp?retryWrites=true&w=majority",
+        process.env.URI,
         {
           useNewUrlParser: true,
           useUnifiedTopology: true,
@@ -17,7 +17,7 @@ describe('Session Variables', () => {
   
     // Close MongoDB connection after all tests
     afterAll(async () => {
-      await mongoose.connection.dropDatabase();
+      await server.close();
       await mongoose.disconnect();
       console.log("database disconnected");
     });

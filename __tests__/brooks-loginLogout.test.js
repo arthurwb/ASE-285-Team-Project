@@ -7,7 +7,7 @@ describe("User Creation", () => {
   beforeAll(async () => {
     // URI used only for testing purposes
     await mongoose.connect(
-      "mongodb+srv://admin:admin@qb3cluster.sknm95g.mongodb.net/mongoTodoapp?retryWrites=true&w=majority",
+      process.env.URI,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -17,10 +17,10 @@ describe("User Creation", () => {
 
   // Close MongoDB connection after all tests
   afterAll(async () => {
-    await mongoose.connection.dropDatabase();
+    await server.close();
     await mongoose.disconnect();
     console.log("database disconnected");
-  });
+  }, 10000);
 
   it("should start", async () => {
     const response = await request(app).get("/");
@@ -70,7 +70,7 @@ describe("Login", () => {
   beforeAll(async () => {
     // URI used only for testing purposes
     await mongoose.connect(
-      "mongodb+srv://admin:admin@qb3cluster.sknm95g.mongodb.net/mongoTodoapp?retryWrites=true&w=majority",
+      process.env.URI,
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -80,10 +80,10 @@ describe("Login", () => {
 
   // Close MongoDB connection after all tests
   afterAll(async () => {
-    await mongoose.connection.dropDatabase();
+    await server.close();
     await mongoose.disconnect();
     console.log("database disconnected");
-  });
+  }, 10000);
 
   it("should start", async () => {
     const response = await request(app).get("/");
