@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
+const Users = require("../models/UserData");
+
 const { app, server, main } = require('../index.js');
 
 const todoTask = require('../models/TodoTask.js');
@@ -13,13 +15,25 @@ dotenv.config();
 
 describe('POST /', () => {
     it('creates a new task', async () => {
+        let cookies;
+        await request(app)
+            .post('/create-account')
+            .send(`username=test&password=test`)
+
+        await request(app)
+            .post('/login')
+            .send({ username: 'test', password: 'test' })
+            .then(res => {
+                cookies = res.headers['set-cookie'];
+            });
+    
         const res = await request(app)
             .post('/')
+            .set('Cookie', cookies)
             .send({
                 title: 'test task'
             });
-        console.log(res.statusCode);
-        expect(res.statusCode).toBe(500);
+        expect(res.statusCode).toBe(302);
     });
 
     afterAll(async () => {

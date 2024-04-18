@@ -7,6 +7,10 @@ const Users = require("../models/UserData");
 const dotenv = require('dotenv');
 dotenv.config();
 
+(async () => {
+    await mongoose.connect(process.env.URI);
+})();
+
 describe('Password hashing', () => {
     it('hashes a password', async () => {
         let user = new Users();

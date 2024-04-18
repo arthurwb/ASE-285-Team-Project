@@ -31,8 +31,8 @@ describe("User Creation", () => {
   it("should create a new user with correct input", async () => {
     console.warn("userCreation 1 start");
     const userData = {
-      username: "test",
-      password: "test", // Ensure password field is included
+      username: "test1",
+      password: "test1", // Ensure password field is included
     };
     console.log(userData);
 
@@ -48,8 +48,8 @@ describe("User Creation", () => {
   it("should return error if user already exists", async () => {
     console.warn("userCreation 2 start");
     const existingUser = {
-      username: "test",
-      password: "test", // Ensure password field is included
+      username: "test1",
+      password: "test1", // Ensure password field is included
     };
 
     const response = await request(app)
