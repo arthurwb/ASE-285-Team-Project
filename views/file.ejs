@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<head>
+<title>Todo App</title>
+  <%- include('common_head.ejs') %>
+</head>
+
+<body>
+<div class="todo-container">
+<h2>To-Do List</h2>
+<div class="tag-search-buttons">
+<button  class="todo-list-item-tag-button" onclick="window.location.href='/'">Home</button>
+
+</div>
+<h3>Username: <%- user %></h3>
+<button  class="todo-list-item-tag-button" onclick="window.location.href='/login/logout'">Log Out</button>
+<div class="todo">
+
+<ul class="todo-list">
+  <% todoTasks.forEach(details => {
+    if (details.isVisible) { %>
+<li class="todo-list-item" data-paused="<%= details.recurrence.isPaused %>">
+  <div class="todo-list-item-content">
+  <div class="todo-list-item-name"><%= details.title %></div>
+  <div class="todo-list-item-date"><%= details.date.toISOString().split('T')[0] %></div>
+  <div class="todo-list-item-tag"><%= details.tag %></div>
+  <div class="todo-list-item-tag"><%= details.fileName %></div>
+  <a href="/upload/<%= details._id %>" class="edit">
+    <span class="fas fa-plus"></span>
+  </a>
+   <a href="/download/<%= details._id %>" class="download">
+    <span class="fas fa-download"></span>
+  </a>
+  </div>
+<% } %>
+    <% }   );%>
+      </ul>
+  </div>
+</div>
+</body>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Todo App</title>
+<%- include('common_head.ejs') %>
+</head>
+<body>
+<div class="todo-container">
+<h2>To-Do List</h2>
+<div class="todo">
+    <ul class="todo-list">
+        <% todoTasks.forEach(details => { %>
+                <li class="todo-list-item-upload">
+                    <form action="/upload/<%= details._id %>" method="POST" enctype="multipart/form-data">
+                        <div><%= details.title %></div>
+                        <div><%= new Date(details.date).toISOString().split('T')[0] %></div>
+                        <input type="file" id="file" name="file">
+                        <button type="submit">Confirm</button>
+                        <a href="/" class="cancel">Cancel</a>
+                    </form>
+                </li>
+        <% }) %>
+    </ul>
+</div>
+</div>
+</body>
+</html>
