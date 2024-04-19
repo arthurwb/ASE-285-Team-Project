@@ -271,18 +271,26 @@ app.get('/tag', function(req, resp) {
 });
 
 app.post("/tag", async (req, res) => {
-   console.log("tag function");
-   console.log(req.body)
+
   try {
-    const tasks = await TodoTask.find({tag: req.body.tag}).sort({_id: 1})
-    console.log(tasks)
-    res.status(200).render("todo.ejs", { todoTasks: tasks, user: req.session.user });
+    const tasks = await TodoTask.find({tag: req.body.tag}).sort({_id: 1});
+
+    let tasksWithVisiblity = tasks.map(task => ({
+      ...task.toObject(),
+      isVisible: calculateTaskVisibility(task)
+    }));
+
+    if (!req.session.user) {throw new Error("not logged in")}
+    tasksWithVisiblity = userSessions.filterUserTasks(tasksWithVisiblity, req.session);
+    console.log(tasksWithVisiblity)
+    res.render("todo.ejs", { todoTasks: tasksWithVisiblity, user: req.session.user });
+
   }
   catch (err) {
-    console.error(err); 
+    console.error(err);
+    res.render("login.ejs");
   }
 });
-
 
 //SUBTASKS
 app.route("/subtask/:id").get(async (req, res) => {

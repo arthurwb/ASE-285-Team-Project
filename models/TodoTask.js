@@ -73,7 +73,11 @@ const todoTaskSchema = new mongoose.Schema({
   tag: {
     type: String,
     default: "Misc"
-  }
+  },
+  file: {
+    data: Buffer, 
+    contentType: String 
+  },
 })
 
 module.exports = mongoose.model('TodoTask',todoTaskSchema);
