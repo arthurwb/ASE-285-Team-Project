@@ -7,12 +7,16 @@ const calculateTaskVisibility = require('./taskVisiblity');
 const userSessions = require ('./userSessions');
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
+const multer = require('multer');
 dotenv.config();
 
 const TodoTask = require("./models/TodoTask");
 const Users = require("./models/UserData");
 main().catch(err => console.log(err));
 const server = app.listen(3000, () => console.log("Server Up and running"));
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 
 async function main() {
@@ -81,7 +85,8 @@ app.route("/").get(async (req, res) => {
     await todoTask.save();
     res.redirect("/");
   } catch (err) {
-    res.send(500, err);
+    res.render("error.ejs", { error: err});
+
   }
 });
 
@@ -169,7 +174,7 @@ app.post('/', async (req, res) => {
       await todoTask.save();
       res.redirect("/");
     } catch (err) {
-      res.send(500, err);
+      res.render("error.ejs", { error: err});
     }
 });
 */
@@ -225,7 +230,7 @@ app.route("/edit/:id")
     let tasks = await TodoTask.find({});
     res.render("todoEdit.ejs", { todoTasks: tasks, idTask: id });
   } catch (err) {
-    res.send(500, err);
+    res.render("error.ejs", { error: err});
   }
 })
 .post(async (req, res) => {
@@ -255,12 +260,12 @@ app.route("/remove/:id").get(async (req, res) => {
     await TodoTask.findByIdAndDelete(id);
     res.redirect("/");
   } catch (err) {
-    res.send(500, err);
+    res.render("error.ejs", { error: err});
   }
 });
 
 //TAG SEARCH
-// Render the page with the form
+//
 app.get('/tag', function(req, resp) { 
 
   try {
@@ -271,7 +276,7 @@ app.get('/tag', function(req, resp) {
 });
 
 app.post("/tag", async (req, res) => {
-
+  console.log(req.body)
   try {
     const tasks = await TodoTask.find({tag: req.body.tag}).sort({_id: 1});
 
@@ -280,9 +285,8 @@ app.post("/tag", async (req, res) => {
       isVisible: calculateTaskVisibility(task)
     }));
 
-    if (!req.session.user) {throw new Error("not logged in")}
+    if (!req.session.user && req.isTest) {throw new Error("not logged in")}
     tasksWithVisiblity = userSessions.filterUserTasks(tasksWithVisiblity, req.session);
-    console.log(tasksWithVisiblity)
     res.render("todo.ejs", { todoTasks: tasksWithVisiblity, user: req.session.user });
 
   }
@@ -398,6 +402,67 @@ app.get('/json', async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).send('An error occurred while fetching tasks.' );
+  }
+});
+
+app.route("/fileView").get(async (req, res) => {
+  try {
+    const tasks = await TodoTask.find({});
+
+    let tasksWithVisiblity = tasks.map(task => ({
+      ...task.toObject(),
+      isVisible: calculateTaskVisibility(task)
+    }));
+
+    if (!req.session.user) {throw new Error("not logged in")}
+    tasksWithVisiblity = userSessions.filterUserTasks(tasksWithVisiblity, req.session);
+    res.render("file.ejs", { todoTasks: tasksWithVisiblity, user: req.session.user });
+
+  }
+  catch (err) {
+    console.error(err);
+    res.render("login.ejs");
+  }
+});
+
+app.route("/upload/:id")
+.get(async (req, res) => {
+  const id = req.params.id;
+  try {
+    let tasks = await TodoTask.find({_id: id});
+    res.render("upload.ejs", { todoTasks: tasks, idTask: id });
+  } catch (err) {
+    res.render("error.ejs", { error: err});
+  }
+})
+.post(upload.single('file'), async (req, res) => {
+  console.log(req.file);
+  const id = req.params.id;
+  try {
+    // Perform the update
+    await TodoTask.findByIdAndUpdate(id, {
+      file: req.file.buffer,
+      fileName: req.file.originalname,
+      fileType: req.file.mimetype,
+      fileSize: req.file.size,
+    });
+    res.redirect("/");
+  } catch (err) {
+    res.send(500, err.message);
+  }
+});
+
+app.get('/download/:id', async (req, res) => {
+  const id = req.params.id;
+
+  try {
+    const file = await TodoTask.findById(id);
+    res.setHeader('Content-Type', file.fileType);
+    res.setHeader('Content-Disposition', `attachment; filename=${file.fileName}`);
+    res.send(file.file);
+  } catch (error) {
+    console.error(error);
+    res.send('File not found');
   }
 });
 
