@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const express = require("express");
-const bodyParser = require("body-parser"); 
+const bodyParser = require("body-parser");
 const app = express();
 const dotenv = require("dotenv");
 const calculateTaskVisibility = require('./taskVisiblity');
@@ -9,11 +9,11 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const multer = require('multer');
 dotenv.config();
+app.use("/static", express.static("public"));
 
 const TodoTask = require("./models/TodoTask");
 const Users = require("./models/UserData");
 main().catch(err => console.log(err));
-const server = app.listen(3000, () => console.log("Server Up and running"));
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -33,11 +33,21 @@ app.use(bodyParser.json()); // Parse JSON request body
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded request body
 app.use(cookieParser());
 
-app.use(session({
-  secret: "testEnv",
-  saveUninitialized: true,
-  resave: true
-}));
+let currentDate;
+
+app.post('/get-date', (req, res) => {
+  currentDate = req.body.date;
+});
+
+const server = app.listen(3000, () => console.log("Server Up and running"));
+
+app.use(
+  session({
+    secret: "testEnv",
+    saveUninitialized: true,
+    resave: true,
+  })
+);
 
 // CRUD processing
 
@@ -65,7 +75,8 @@ app.route("/").get(async (req, res) => {
   const todoTask = new TodoTask({
       title: req.body.title,
       isRecurring: req.body.isRecurring,
-      user: req.session.user
+      user: req.session.user,
+      date: currentDate
   });
 
     // Creates recurrence object only if user is creating a recurring task.
@@ -77,9 +88,9 @@ app.route("/").get(async (req, res) => {
         dayOfMonth: req.body.dayOfMonth,
         startBy: req.body.startBy,
         endBy: req.body.endBy,
-        isPaused: false
-      }
-    };
+        isPaused: false,
+      };
+    }
 
   try {
     await todoTask.save();
@@ -114,7 +125,7 @@ app.route("/login").get(async (req, res) => {
     }
   } catch (error) {
     console.error("Error in login:", error);
-    res.send({ success: false, message: "Server error" });
+    res.send({ success: false, message: "Server error"});
   }
 });
 
@@ -149,12 +160,12 @@ app.route("/create-account").get(async (req, res) => {
       console.log("User created successfully: " + req.body.username);
       res.send({ success: true, message: "User created successfully" });
     }
-  } 
+  }
   catch (error) {
     console.error("Error in creating user:", error);
     res.send({ success: false, message: "Server error" });
   }
-});
+  });
 
 /* app.get("/", async (req, res) => {
   try {
@@ -180,43 +191,52 @@ app.post('/', async (req, res) => {
 */
 
 //COMPLETE
-app.route("/complete/:id")
-.patch(async (req, res) => {
+app.route("/complete/:id").patch(async (req, res) => {
   const id = req.params.id;
   const completionDate = new Date();
   try {
-    let completedTask = await TodoTask.findOneAndUpdate({_id: id}, {$push: {completions: {date: completionDate}}}, {new: true});
+    let completedTask = await TodoTask.findOneAndUpdate(
+      { _id: id },
+      { $push: { completions: { date: completionDate } } },
+      { new: true }
+    );
     if (!completedTask.isRecurring) {
-      await TodoTask.deleteOne({_id: completedTask.id});
+      await TodoTask.deleteOne({ _id: completedTask.id });
     }
 
-    res.redirect('/');
+    res.redirect("/");
   } catch (err) {
     res.status(500).send(err);
   }
 });
 
 //PAUSE
-app.route("/pause/:id")
-.patch(async (req, res) => {
+app.route("/pause/:id").patch(async (req, res) => {
   const id = req.params.id;
   try {
-    await TodoTask.findOneAndUpdate({_id: id}, {$set: {'recurrence.isPaused': true}}, {new: true});
-    
-    res.redirect('/');
+    await TodoTask.findOneAndUpdate(
+      { _id: id },
+      { $set: { "recurrence.isPaused": true } },
+      { new: true }
+    );
+
+    res.redirect("/");
   } catch (err) {
     res.status(500).send(err);
   }
 });
 
 //RESUME
-app.route("/resume/:id")
-.patch(async (req, res) => {
+app.route("/resume/:id").patch(async (req, res) => {
   const id = req.params.id;
   try {
-    await TodoTask.findOneAndUpdate({_id: id}, {$set: {'recurrence.isPaused': false}}, {new: true});
-    
-    res.redirect('/');
+    await TodoTask.findOneAndUpdate(
+      { _id: id },
+      { $set: { "recurrence.isPaused": false } },
+      { new: true }
+    );
+
+    res.redirect("/");
   } catch (err) {
     res.status(500).send(err);
   }
@@ -239,13 +259,13 @@ app.route("/edit/:id")
     const { title, date } = req.body;
     const parsedDate = new Date(date);
     if (isNaN(parsedDate.getTime())) {
-      throw new Error('Invalid date format.');
+      throw new Error("Invalid date format.");
     }
     // Perform the update
     await TodoTask.findByIdAndUpdate(id, {
       title: title,
       date: parsedDate,
-      tag: req.body.tag
+      tag: req.body.tag,
     });
     res.redirect("/");
   } catch (err) {
@@ -264,15 +284,60 @@ app.route("/remove/:id").get(async (req, res) => {
   }
 });
 
+//DATE SEARCH
+app.route("/date")
+.get((req, res) => {
+  try {
+    res.render("todoDateSearch.ejs");
+  } catch (err) {
+    res.send(500, err);
+  }
+})
+.post(async (req, res) => {
+  try {
+    let startDate = new Date(req.body.date);
+    
+    if (req.body.endDate === '') {
+      let tasks = await TodoTask.find({date: startDate});
+
+      tasks = tasks.map(task => ({
+        ...task.toObject(),
+        isVisible: true
+      }));
+
+      res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
+    }
+    else {
+      let endDate = new Date(req.body.endDate);
+      let tasks = await TodoTask.find({
+        date: {
+          $gte: new Date(startDate),
+          $lte: new Date(endDate)
+        }
+      });
+
+      tasks = tasks.map(task => ({
+        ...task.toObject(),
+        isVisible: true
+      }));
+
+      res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
+    }
+
+  } catch (err) {
+    res.send(500, err);
+  }
+});
+
 //TAG SEARCH
 //
 app.get('/tag', function(req, resp) { 
 
   try {
-    resp.status(500).render('todoTagSearch.ejs')
+    resp.status(500).render("todoTagSearch.ejs");
   } catch (e) {
     console.error(e);
-  } 
+  }
 });
 
 app.post("/tag", async (req, res) => {
@@ -297,75 +362,79 @@ app.post("/tag", async (req, res) => {
 });
 
 //SUBTASKS
-app.route("/subtask/:id").get(async (req, res) => {
-  const id = req.params.id;
-  try {
-    let tasks = await TodoTask.find({_id: id});
-    res.render("todoSubtask.ejs", { todoTask: tasks });
-  } catch (err) {
-    console.error(err);
-  }
-})
-.post(async (req, res) => {
-  const id = req.params.id;
-  try {
-    const subtask = req.body;
-    // Perform the update
-    await TodoTask.findByIdAndUpdate(id, {
-      $push: {
-        subtasks: subtask,
-      },
-    });
-    res.redirect(`/subtask/${id}`);
-  } catch (err) {
-    res.status(500).send(err);
-  }
-});
+app
+  .route("/subtask/:id")
+  .get(async (req, res) => {
+    const id = req.params.id;
+    try {
+      let tasks = await TodoTask.find({ _id: id });
+      res.render("todoSubtask.ejs", { todoTask: tasks });
+    } catch (err) {
+      console.error(err);
+    }
+  })
+  .post(async (req, res) => {
+    const id = req.params.id;
+    try {
+      const subtask = req.body;
+      // Perform the update
+      await TodoTask.findByIdAndUpdate(id, {
+        $push: {
+          subtasks: subtask,
+        },
+      });
+      res.redirect(`/subtask/${id}`);
+    } catch (err) {
+      res.status(500).send(err);
+    }
+  });
 
 //SUBTASK EDIT
-app.route("/subtaskEdit/:id").get(async (req, res) => {
-  const id = req.params.id;
-  try {
-    let task = await TodoTask.find({"subtasks._id": id});
-    res.render("subtaskEdit.ejs", { todoTask: task, idSubtask: id });
-  } catch (err) {
-    res.send(500, err.message)
-  }
-})
-.post(async (req, res) => {
-  const id = req.params.id;
-  try {
-    const { subtaskTitle, subtaskDate } = req.body;
-    //getting task for id
-    let task = await TodoTask.find({"subtasks._id": id});
-    // Perform the update
-    await TodoTask.findByIdAndUpdate(task[0]._id, {
-      subtasks: task[0].subtasks.map(subtask => {
-        if (subtask._id == id) {
-          subtask.subtaskTitle = subtaskTitle;
-          subtask.subtaskDate = subtaskDate;
-        }
-        return subtask;
-      })
-    });
-    res.redirect(`/subtask/${task[0]._id}`);
-  } catch (err) {
-    res.send(500, err.message);
-  }
-});
+app
+  .route("/subtaskEdit/:id")
+  .get(async (req, res) => {
+    const id = req.params.id;
+    try {
+      let task = await TodoTask.find({ "subtasks._id": id });
+      res.render("subtaskEdit.ejs", { todoTask: task, idSubtask: id });
+    } catch (err) {
+      res.send(500, err.message);
+    }
+  })
+  .post(async (req, res) => {
+    const id = req.params.id;
+    try {
+      const { subtaskTitle, subtaskDate } = req.body;
+      //getting task for id
+      let task = await TodoTask.find({ "subtasks._id": id });
+      // Perform the update
+      await TodoTask.findByIdAndUpdate(task[0]._id, {
+        subtasks: task[0].subtasks.map((subtask) => {
+          if (subtask._id == id) {
+            subtask.subtaskTitle = subtaskTitle;
+            subtask.subtaskDate = subtaskDate;
+          }
+          return subtask;
+        }),
+      });
+      res.redirect(`/subtask/${task[0]._id}`);
+    } catch (err) {
+      res.send(500, err.message);
+    }
+  });
 
 //SUBTASK DELETE
 app.route("/subtaskRemove/:id").get(async (req, res) => {
   const id = req.params.id;
   try {
-    let task = await TodoTask.find({"subtasks._id": id});
+    let task = await TodoTask.find({ "subtasks._id": id });
     // Perform the update
     await TodoTask.findByIdAndUpdate(task[0]._id, {
       $pull: {
         subtasks: {
-          _id: id
-        }
-      }
+          _id: id,
+        },
+      },
     });
     res.redirect(`/subtask/${task[0]._id}`);
   } catch (err) {
@@ -377,15 +446,15 @@ app.route("/subtaskRemove/:id").get(async (req, res) => {
 app.route("/subtaskComplete/:id").get(async (req, res) => {
   const id = req.params.id;
   try {
-    let task = await TodoTask.find({"subtasks._id": id});
+    let task = await TodoTask.find({ "subtasks._id": id });
     // Perform the update
     await TodoTask.findByIdAndUpdate(task[0]._id, {
-      subtasks: task[0].subtasks.map(subtask => {
+      subtasks: task[0].subtasks.map((subtask) => {
         if (subtask._id == id) {
           subtask.subtaskCompleted = !subtask.subtaskCompleted;
         }
         return subtask;
-      })
+      }),
     });
     res.redirect("/");
   } catch (err) {
@@ -393,15 +462,14 @@ app.route("/subtaskComplete/:id").get(async (req, res) => {
   }
 });
 
-
 //GETJSON
-app.get('/json', async (req, res) => {
+app.get("/json", async (req, res) => {
   try {
     const tasks = await TodoTask.find({});
-    res.render('json.ejs', { tasks: JSON.stringify(tasks, null, 2) });
+    res.render("json.ejs", { tasks: JSON.stringify(tasks, null, 2) });
   } catch (err) {
     console.error(err);
-    res.status(500).send('An error occurred while fetching tasks.' );
+    res.status(500).send("An error occurred while fetching tasks.");
   }
 });
 

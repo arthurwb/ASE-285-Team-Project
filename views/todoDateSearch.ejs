@@ -1,0 +1,24 @@
+
+<!DOCTYPE html>
+<head>
+    <title>Todo App</title>
+    <%- include('common_head.ejs') %>
+</head>
+<body>
+<div class="todo-container">
+<h2>Search By Date</h2>
+<div class="todo">
+
+<form action="/date" method="POST" class="todo-header">
+    <div class="date-search-container">
+        <label for="date">*Select a date:</label>
+        <input type="date" id="date" name="date">
+        <label for="enddate">Select an end date:</label>
+        <input type="date" id="endDate" name="endDate">
+        <button type="submit"><span class="fas fa-plus"></span></button>
+    </div>
+</form>
+
+</div>
+</div>
+</body>

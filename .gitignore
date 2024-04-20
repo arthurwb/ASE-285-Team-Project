@@ -4,3 +4,4 @@ node_modules/
 _config.js
 .env
 cloc-2.00.exe
+test.http
