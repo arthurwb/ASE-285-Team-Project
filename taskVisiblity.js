@@ -1,5 +1,5 @@
 function calculateTaskVisibility(details) {
-    const currentDate = new Date();
+    let currentDate = new Date();
     const startDate = new Date(details.recurrence.startBy);
     let endDate = details.recurrence.endBy ? new Date(details.recurrence.endBy) : null;
     let isVisible = true;

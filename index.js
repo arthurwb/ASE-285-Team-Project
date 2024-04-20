@@ -321,9 +321,6 @@ app.route("/date")
         ...task.toObject(),
         isVisible: true
       }));
-      
-      if (!req.session.user) {throw new Error("not logged in")}
-      tasksWithVisiblity = userSessions.filterUserTasks(tasksWithVisiblity, req.session);
 
       res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
     }

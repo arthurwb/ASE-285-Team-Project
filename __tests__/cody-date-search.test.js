@@ -68,7 +68,7 @@ describe('Test Suite for Date Search', () => {
             const wrongTestDate2 = new Date(testDate.setDate(testDate.getDate() + 15));
     
             // Sending POST request to date route to search for task in specific range
-            let response = await agent.post('/date').send({ date: testDatePreviousDay.toISOString(), endDate: testDateNextDay.toISOString() });
+            let response = await agent.post('/date').send({ date: testDatePreviousDay, endDate: testDateNextDay });
     
             // Checking if response contains task created earlier
             expect(response.text).toContain('Test Task with Random Date');
