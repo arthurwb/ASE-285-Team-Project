@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
+const UserData = require('../models/UserData');
 const { app, server, main } = require('../index.js');
 
 const Users = require("../models/UserData");
@@ -54,6 +55,8 @@ describe('Storing user data', () => {
     });
 
     afterAll(async () => {    
+        await UserData.findOneAndDelete({ username: 'test' });
+
         await server.close();
         await mongoose.connection.close();
     }, 10000);

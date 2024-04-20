@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const request = require('supertest');
 const Users = require("../models/UserData");
+const TodoTask = require("../models/TodoTask.js");
 
 const { app, server, main } = require('../index.js');
 
@@ -138,6 +139,9 @@ describe('GET /subtaskRemove', () => {
     });
 
     afterAll(async () => {    
+        await TodoTask.findOneAndDelete({ title: 'test task' });
+        await Users.findOneAndDelete({  username: 'test' });
+
         await server.close();
         await mongoose.connection.close();
     }, 10000);

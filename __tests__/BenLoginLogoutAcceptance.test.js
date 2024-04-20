@@ -1,8 +1,10 @@
 const request = require("supertest");
 const mongoose = require("mongoose");
+const UserData = require('../models/UserData');
 const { app, server, main } = require('../index');
 
 describe("User Creation", () => {
+
   // Connect to MongoDB memory server before running any tests
   beforeAll(async () => {
     // URI used only for testing purposes
@@ -17,6 +19,8 @@ describe("User Creation", () => {
 
   // Close MongoDB connection after all tests
   afterAll(async () => {
+    await UserData.findOneAndDelete({ username: 'test1' });
+
     await server.close();
     await mongoose.disconnect();
     console.log("database disconnected");
@@ -80,6 +84,8 @@ describe("Login", () => {
 
   // Close MongoDB connection after all tests
   afterAll(async () => {
+    await UserData.findOneAndDelete({ username: 'test' });
+
     await server.close();
     await mongoose.disconnect();
     console.log("database disconnected");

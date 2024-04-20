@@ -1,7 +1,8 @@
 const request = require('supertest');
+const mongoose = require('mongoose');
 const {app, server, main} = require('../index');
 const TodoTask = require('../models/TodoTask');
-const UserData = require('../models/UserData')
+const UserData = require('../models/UserData');
 const randomDate = require('../randomDate');
 const testUsername = 'test@test.com';
 const testPassword = 'password123!!';
@@ -21,13 +22,20 @@ describe('Test Suite for Recurring Tasks and Search by Date', () => {
         await UserData.findOneAndDelete({ username: testUsername });
     });
 
+    // Close MongoDB connection after all tests
+    afterAll(async () => {
+        await mongoose.disconnect();
+        await server.close();
+        console.log("database disconnected");
+    }, 10000);
+
     describe('Recurring Task Interval Display', () => {
         it('should display the task only if the current date is past or on the specific interval', async () => {
             const testDate = new Date();
             const startDate = new Date().toISOString();
             const millisecondsPerDay = 86400000;
             // Creating task that will repeat every 3 days
-            const recurringTask = new TodoTask({title: 'Recurring Task with Interval', date: testDate, isRecurring: true, recurrence: {frequency: 'daily', interval: 3, startBy: startDate, endBy: null, isPaused: false}});
+            const recurringTask = new TodoTask({title: 'Recurring Task with Interval', date: testDate, user: testUsername, isRecurring: true, recurrence: {frequency: 'daily', interval: 3, startBy: startDate, endBy: null, isPaused: false}});
             await recurringTask.save();
     
             // Rendering page with tasks on it
@@ -72,7 +80,7 @@ describe('Test Suite for Recurring Tasks and Search by Date', () => {
             const startDate = new Date(currentDate.getTime() + millisecondsPerWeek);
             const endDate = new Date(startDate.getTime() + millisecondsPerWeek);
             // Creating task with a startby date and endby date
-            const recurringTask = new TodoTask({title: 'Recurring Task with Startby and Endby dates', date: currentDate, isRecurring: true, recurrence: {frequency: 'daily', interval: 3, startBy: startDate, endBy: endDate, isPaused: false}});
+            const recurringTask = new TodoTask({title: 'Recurring Task with Startby and Endby dates', date: currentDate, user: testUsername, isRecurring: true, recurrence: {frequency: 'daily', interval: 3, startBy: startDate, endBy: endDate, isPaused: false}});
             await recurringTask.save();
     
             // Rendering page with tasks on it
@@ -108,7 +116,7 @@ describe('Test Suite for Recurring Tasks and Search by Date', () => {
         it('should show task(s) made on a specific date inputted by user', async () => {
             // Creating task with a specific date to be searched
             const testDate = randomDate();
-            const testTask = new TodoTask({title: 'Test Task with Random Date', date: testDate});
+            const testTask = new TodoTask({title: 'Test Task with Random Date', date: testDate, user: testUsername});
             await testTask.save();
     
             // Creating date that does not match test date since it is before 2024 (test date created is after 2024)
@@ -139,7 +147,7 @@ describe('Test Suite for Recurring Tasks and Search by Date', () => {
             testDateNextDay.setDate(testDateNextDay.getDate() + 1);
             let testDatePreviousDay = new Date(testDate);
             testDatePreviousDay.setDate(testDatePreviousDay.getDate() - 1);
-            const testTask = new TodoTask({title: 'Test Task with Random Date', date: testDate});
+            const testTask = new TodoTask({title: 'Test Task with Random Date', date: testDate, user: testUsername});
             await testTask.save();
     
             // Creating dates that will not match task to test

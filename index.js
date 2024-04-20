@@ -35,6 +35,7 @@ app.use(cookieParser());
 
 let currentDate;
 
+// Route for getting local date from client
 app.post('/get-date', (req, res) => {
   currentDate = req.body.date;
 });

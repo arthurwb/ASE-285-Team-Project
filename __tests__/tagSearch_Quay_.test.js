@@ -24,6 +24,7 @@ describe('Tag Search Feature', () => {
   .send({ tag: 'Work', isTest: true}) // Sends a JSON payload with the specified data
   .set('Content-Type', 'application/json') // Sets the Content-Type header to JSON
   .set('Accept', 'application/json'); // Sets the Accept header to JSON
+  console.log(response.text);
     // Assert that the response contains the expected tasks
     expect(response.status).toBe(200);
     expect(response.text).toContain("Work");

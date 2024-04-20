@@ -9,6 +9,8 @@ const fileOut = fs.readFileSync(__dirname + '/test.txt', 'utf-8');
 describe("Testing of uploading and downloading a file", () => {   
 
   afterAll(async () => {
+    await TodoTask.findOneAndDelete({ title: 'Task 1' });
+
     await server.close();
     await mongoose.disconnect();
     console.log("database disconnected");
