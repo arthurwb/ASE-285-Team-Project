@@ -299,12 +299,14 @@ app.route("/date")
     if (req.body.endDate === '') {
       let tasks = await TodoTask.find({date: startDate});
 
-      tasks = tasks.map(task => ({
+      let tasksWithVisibility = tasks.map(task => ({
         ...task.toObject(),
         isVisible: true
       }));
 
-      res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
+      if (!req.session.user) {throw new Error("not logged in")}
+      tasksWithVisibility = userSessions.filterUserTasks(tasksWithVisibility, req.session);
+      res.render("todo.ejs", { todoTasks: tasksWithVisibility, user: req.session.user });
     }
     else {
       let endDate = new Date(req.body.endDate);
@@ -315,14 +317,15 @@ app.route("/date")
         }
       });
 
-      tasks = tasks.map(task => ({
+      tasksWithVisibility = tasks.map(task => ({
         ...task.toObject(),
         isVisible: true
       }));
 
-      res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
+      if (!req.session.user) {throw new Error("not logged in")}
+      tasksWithVisibility = userSessions.filterUserTasks(tasksWithVisibility, req.session);
+      res.render("todo.ejs", { todoTasks: tasksWithVisibility, user: req.session.user });
     }
-
   } catch (err) {
     res.send(500, err);
   }
@@ -344,14 +347,14 @@ app.post("/tag", async (req, res) => {
   try {
     const tasks = await TodoTask.find({tag: req.body.tag}).sort({_id: 1});
 
-    let tasksWithVisiblity = tasks.map(task => ({
+    let tasksWithVisibility = tasks.map(task => ({
       ...task.toObject(),
       isVisible: calculateTaskVisibility(task)
     }));
 
     if (!req.session.user && req.isTest) {throw new Error("not logged in")}
-    tasksWithVisiblity = userSessions.filterUserTasks(tasksWithVisiblity, req.session);
-    res.render("todo.ejs", { todoTasks: tasksWithVisiblity, user: req.session.user });
+    tasksWithVisibility = userSessions.filterUserTasks(tasksWithVisibility, req.session);
+    res.render("todo.ejs", { todoTasks: tasksWithVisibility, user: req.session.user });
 
   }
   catch (err) {
