@@ -4,7 +4,7 @@ const TodoTask = require('../models/TodoTask');
 const mongoose = require("mongoose");
 const fs = require('fs');
 
-const fileOut = fs.readFileSync(__dirname + '/test.txt', 'utf-8');
+const fileOut = fs.readFileSync(__dirname + '/file_for_fileUpDown_test.txt', 'utf-8');
 
 describe("Testing of uploading and downloading a file", () => {   
 
@@ -28,7 +28,7 @@ describe("Testing of uploading and downloading a file", () => {
     const upload = await request(app)
       .post(`/upload/${id}`)
       .set('Content-Type', 'multipart/form-data')
-      .attach('file', __dirname + '/test.txt'); // Make sure the file path is correct
+      .attach('file', __dirname + '/file_for_fileUpDown_test.txt'); // Make sure the file path is correct
 
     // Download the file
     const res = await request(app).get(`/download/${id}`);
