@@ -1,7 +1,8 @@
 window.onload = () => {
     document.querySelectorAll('.todo-list-item').forEach((e) => {
-      console.log(e.dataset.paused);
       if (e.dataset.paused == 'true') {
+        let complete = e.querySelector('.complete');
+        complete.style.visibility = 'hidden';
         e.style.opacity = '0.5';
         e.querySelectorAll('a').forEach((anchor) => {
         anchor.addEventListener('click', (e) => {
