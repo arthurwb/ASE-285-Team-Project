@@ -58,6 +58,7 @@ app.route("/").get(async (req, res) => {
 
     if (!req.session.user) {throw new Error("not logged in")}
     tasksWithVisiblity = userSessions.filterUserTasks(tasksWithVisiblity, req.session);
+    console.log("todoTasks: " + tasksWithVisiblity);
     res.render("todo.ejs", { todoTasks: tasksWithVisiblity, user: req.session.user });
 
   }
