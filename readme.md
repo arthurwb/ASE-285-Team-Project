@@ -1,5 +1,5 @@
 # Team 🅉 Project Page - "TaskMaster"
-##Slogan: 
+## Slogan: 
  - "Focus on What Matters: Streamlining Tasks with Every Click."
 ## Our goal in this project: 
  - Our goal in this project is to create a streamlined task management solution with a user-friendly web application that enables effortless organization of daily tasks and deadlines by utilizing Mongoose/MongoDB for seamless operation. This project will demonstrate our skills in creating complex solutions that involve designing and engineering software. 
