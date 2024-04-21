@@ -33,13 +33,6 @@ app.use(bodyParser.json()); // Parse JSON request body
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded request body
 app.use(cookieParser());
 
-let currentDate;
-
-// Route for getting local date from client
-app.post('/get-date', (req, res) => {
-  currentDate = req.body.date;
-});
-
 const server = app.listen(3000, () => console.log("Server Up and running"));
 
 app.use(
@@ -65,6 +58,7 @@ app.route("/").get(async (req, res) => {
 
     if (!req.session.user) {throw new Error("not logged in")}
     tasksWithVisiblity = userSessions.filterUserTasks(tasksWithVisiblity, req.session);
+    console.log("todoTasks: " + tasksWithVisiblity);
     res.render("todo.ejs", { todoTasks: tasksWithVisiblity, user: req.session.user });
 
   }
@@ -73,11 +67,15 @@ app.route("/").get(async (req, res) => {
     res.render("login.ejs");
   }
 }).post(async (req, res) => {
+  // Adjusting date to UTC without changing the date
+  const date = new Date();
+  const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+
   const todoTask = new TodoTask({
       title: req.body.title,
       isRecurring: req.body.isRecurring,
       user: req.session.user,
-      date: currentDate
+      date: utcDate
   });
 
     // Creates recurrence object only if user is creating a recurring task.
@@ -301,12 +299,14 @@ app.route("/date")
     if (req.body.endDate === '') {
       let tasks = await TodoTask.find({date: startDate});
 
-      tasks = tasks.map(task => ({
+      let tasksWithVisibility = tasks.map(task => ({
         ...task.toObject(),
         isVisible: true
       }));
 
-      res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
+      if (!req.session.user) {throw new Error("not logged in")}
+      tasksWithVisibility = userSessions.filterUserTasks(tasksWithVisibility, req.session);
+      res.render("todo.ejs", { todoTasks: tasksWithVisibility, user: req.session.user });
     }
     else {
       let endDate = new Date(req.body.endDate);
@@ -317,14 +317,15 @@ app.route("/date")
         }
       });
 
-      tasks = tasks.map(task => ({
+      tasksWithVisibility = tasks.map(task => ({
         ...task.toObject(),
         isVisible: true
       }));
 
-      res.render("todo.ejs", { todoTasks: tasks, user: req.session.user });
+      if (!req.session.user) {throw new Error("not logged in")}
+      tasksWithVisibility = userSessions.filterUserTasks(tasksWithVisibility, req.session);
+      res.render("todo.ejs", { todoTasks: tasksWithVisibility, user: req.session.user });
     }
-
   } catch (err) {
     res.send(500, err);
   }
@@ -346,14 +347,14 @@ app.post("/tag", async (req, res) => {
   try {
     const tasks = await TodoTask.find({tag: req.body.tag}).sort({_id: 1});
 
-    let tasksWithVisiblity = tasks.map(task => ({
+    let tasksWithVisibility = tasks.map(task => ({
       ...task.toObject(),
       isVisible: calculateTaskVisibility(task)
     }));
 
     if (!req.session.user && req.isTest) {throw new Error("not logged in")}
-    tasksWithVisiblity = userSessions.filterUserTasks(tasksWithVisiblity, req.session);
-    res.render("todo.ejs", { todoTasks: tasksWithVisiblity, user: req.session.user });
+    tasksWithVisibility = userSessions.filterUserTasks(tasksWithVisibility, req.session);
+    res.render("todo.ejs", { todoTasks: tasksWithVisibility, user: req.session.user });
 
   }
   catch (err) {
