@@ -5,14 +5,14 @@
  - Our goal in this project is to create a streamlined task management solution with a user-friendly web application that enables effortless organization of daily tasks and deadlines by utilizing Mongoose/MongoDB for seamless operation. This project will demonstrate our skills in creating complex solutions that involve designing and engineering software. 
 
 ## Features: The following are some unique features that make our application stand above all others in the current market.
-File Upload (Quay Robinson)
-Tag Query/Search (Quay Robinson)
-Entry Subtasks (Bryce Bien)
-Password Encryption and User Data Storage (Bryce Bien)
-Session Controls (Brooks Arthur)
-User Login Page (Brooks Arthur)
-Recurring Entries (Cody King)
-Search By Date (Cody King)
+ - File Upload (Quay Robinson)
+ - Tag Query/Search (Quay Robinson)
+ - Entry Subtasks (Bryce Bien)
+ - Password Encryption and User Data Storage (Bryce Bien)
+ - Session Controls (Brooks Arthur)
+ - User Login Page (Brooks Arthur)
+ - Recurring Entries (Cody King)
+ - Search By Date (Cody King)
 
 ## Team Rules
 - The team rules can also be found from this link(GitHub LinkLinks to an external site.). 
@@ -28,26 +28,26 @@ Search By Date (Cody King)
 
 ## Team Tools
 ### Programming languages:
-JavaScript
-JSON*
-EJS
-HTML*
-CSS*
-Node.js
-Markdown*
-JEST*
+ - JavaScript
+ - JSON*
+ - EJS
+ - HTML*
+ - CSS*
+ - Node.js
+ - Markdown*
+ - JEST*
  
 
 ### Software: 
-IDE: Visual Studio Code
-Notion
-GitHub*
-GitHub Desktop
-Discord (Communication)
-Microsoft Outlook (Communication)
-Microsoft Teams (Communication)
-Canvas (Planning)
+ - IDE: Visual Studio Code
+ - Notion
+ - GitHub*
+ - GitHub Desktop
+ - Discord (Communication)
+ - Microsoft Outlook (Communication)
+ - Microsoft Teams (Communication)
+ - Canvas (Planning)
  
 
 ### Database:
-MongoDB/Mongoose 
+ - MongoDB/Mongoose 
