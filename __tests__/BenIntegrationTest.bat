@@ -1,8 +1,12 @@
 rem Run Jest tests
-npx jest --runInBand __tests__/brooks-loginLogout.test.js ^
-            __tests__/brooks-sessionVariables.test.js ^
-            __tests__/PasswordEncryption_UnitTest_Bryce_Bien.test.js ^
-            __tests__/Subtasks_UnitTest_Bryce_Bien.test.js ^
-            __tests__/recurringTask.test.js
+npx jest --runInBand __tests__/BrooksLoginLogout.test.js ^
+            __tests__/BrooksSessionVariables.test.js ^
+            __tests__/BrycePasswordEncryptionUnitTest.test.js ^
+            __tests__/BryceSubtasksUnitTest.test.js ^
+            __tests__/CodyDateSearch.test.js ^
+            __tests__/CodyRecurringTasks.test.js ^
+            __tests__/QuayFileUpDown.test.js ^
+            __tests__/QuayTagSearch.test.js 
+
 
 pause
