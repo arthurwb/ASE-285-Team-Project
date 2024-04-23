@@ -34,6 +34,10 @@ function calculateTaskVisibility(details) {
         }
     }
 
+    if (endDate && currentDate >= endDate) {
+        isVisible = false;
+    }
+
     return isVisible;
 }
 
