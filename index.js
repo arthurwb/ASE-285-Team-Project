@@ -33,13 +33,6 @@ app.use(bodyParser.json()); // Parse JSON request body
 app.use(bodyParser.urlencoded({ extended: true })); // Parse URL-encoded request body
 app.use(cookieParser());
 
-let currentDate;
-
-// Route for getting local date from client
-app.post('/get-date', (req, res) => {
-  currentDate = req.body.date;
-});
-
 const server = app.listen(3000, () => console.log("Server Up and running"));
 
 app.use(
@@ -73,11 +66,15 @@ app.route("/").get(async (req, res) => {
     res.render("login.ejs");
   }
 }).post(async (req, res) => {
+  // Adjusting date to UTC without changing the date
+  const date = new Date();
+  const utcDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+
   const todoTask = new TodoTask({
       title: req.body.title,
       isRecurring: req.body.isRecurring,
       user: req.session.user,
-      date: currentDate
+      date: utcDate
   });
 
     // Creates recurrence object only if user is creating a recurring task.
